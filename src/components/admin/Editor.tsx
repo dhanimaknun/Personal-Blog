@@ -492,7 +492,7 @@ function HistoryPanel({
   }
 
   return (
-    <aside className="w-[300px] shrink-0 overflow-y-auto border-l border-divider bg-[#fbfbfd] px-4 py-5">
+    <aside className="w-[300px] shrink-0 overflow-y-auto border-l border-divider bg-[#faf9f6] px-4 py-5">
       <div className="flex items-center justify-between">
         <h2 className="text-[12px] font-semibold uppercase tracking-[0.14em] text-secondary">
           Version history

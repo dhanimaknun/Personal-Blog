@@ -1,4 +1,3 @@
-import { ArrowDown } from "lucide-react";
 import { PublicShell } from "@/components/PublicShell";
 import { PostList } from "@/components/PostList";
 import { Sidebar } from "@/components/Sidebar";
@@ -32,15 +31,7 @@ export default async function HomePage() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <PublicShell
-        sidebar={<Sidebar />}
-        header={
-          <div className="mt-16 flex items-center gap-3 text-secondary">
-            <ArrowDown className="h-[18px] w-[18px]" strokeWidth={1.5} />
-            <span className="t-eyebrow">Posts</span>
-          </div>
-        }
-      >
+      <PublicShell sidebar={<Sidebar />}>
         <PostList posts={posts} emptyMessage="No entries published yet." />
       </PublicShell>
     </>

@@ -6,6 +6,7 @@ import { getSession } from "@/lib/auth";
 import { greeting, relativeTime, longDate } from "@/lib/dates";
 import { site } from "@/lib/site";
 import { StatTile } from "@/components/admin/StatTile";
+import { Wordmark } from "@/components/Wordmark";
 
 export const dynamic = "force-dynamic";
 
@@ -34,9 +35,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="mx-auto max-w-3xl px-8 py-16">
-      <p className="font-display text-[15px] font-light tracking-tight text-secondary">
-        {site.wordmark}
-      </p>
+      <Wordmark className="font-display text-[15px] font-bold tracking-[-0.02em] text-secondary" />
       <h1 className="mt-3 font-display text-[40px] font-light leading-tight tracking-tight text-ink">
         {greeting()}, {name}.
       </h1>

@@ -77,7 +77,7 @@ export function RowActions({ id, actions }: { id: string; actions: Action[] }) {
             <button
               key={action}
               onClick={() => run(action)}
-              className={`block w-full px-3.5 py-2 text-left text-[13px] transition-colors hover:bg-[#f5f5f7] ${
+              className={`block w-full px-3.5 py-2 text-left text-[13px] transition-colors hover:bg-[#f1efe8] ${
                 action === "purge" ? "text-[#c8102e]" : "text-ink"
               }`}
             >

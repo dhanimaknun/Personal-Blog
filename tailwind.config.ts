@@ -5,12 +5,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        canvas: "#FFFFFF",
+        canvas: "#FAF9F6", // warm off-white page
+        surface: "#FFFFFF", // cards / raised areas
         ink: "#1D1D1F",
         secondary: "#6E6E73",
-        divider: "#E8E8ED",
+        divider: "#E4E2DC",
         hover: "#111111",
-        accent: "#0071E3",
+        accent: "#C8461E", // terracotta
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
@@ -23,7 +24,6 @@ const config: Config = {
         sidebar: "280px",
       },
       spacing: {
-        // 8pt scale — 72px is the only value missing from Tailwind's defaults
         18: "4.5rem", // 72px
       },
       transitionTimingFunction: {
@@ -33,10 +33,7 @@ const config: Config = {
         DEFAULT: "200ms",
       },
       keyframes: {
-        "fade-in": {
-          from: { opacity: "0" },
-          to: { opacity: "1" },
-        },
+        "fade-in": { from: { opacity: "0" }, to: { opacity: "1" } },
       },
       animation: {
         "fade-in": "fade-in 300ms cubic-bezier(0, 0, 0.2, 1)",

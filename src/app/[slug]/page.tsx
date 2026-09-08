@@ -90,10 +90,10 @@ export default async function PostPage({ params }: Props) {
           {post.tags.length > 0 ? (
             <ul className="mt-16 flex flex-wrap gap-x-6 gap-y-2">
               {post.tags.map((tag) => (
-                <li key={tag} className="t-tag">
+                <li key={tag} className="t-tag uppercase">
                   <Link
                     href={`/tags/${tag}`}
-                    className="text-secondary transition-colors duration-200 ease-out hover:text-accent hover:underline"
+                    className="text-secondary transition-colors duration-200 ease-out hover:text-accent"
                   >
                     #{tag}
                   </Link>

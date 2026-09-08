@@ -14,7 +14,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { api } from "@/lib/client";
-import { site } from "@/lib/site";
+import { Wordmark } from "@/components/Wordmark";
 import { NewPostButton } from "@/components/admin/NewPostButton";
 
 type Counts = { published: number; drafts: number; archived: number; trashed: number };
@@ -48,9 +48,9 @@ export function AdminSidebar({ counts }: { counts: Counts }) {
   }
 
   return (
-    <aside className="sticky top-0 flex h-screen w-[248px] shrink-0 flex-col border-r border-divider bg-[#f5f5f7] px-3 py-5">
+    <aside className="sticky top-0 flex h-screen w-[248px] shrink-0 flex-col border-r border-divider bg-[#f1efe8] px-3 py-5">
       <div className="px-2">
-        <p className="font-display text-[15px] font-light tracking-tight text-ink">{site.wordmark}</p>
+        <Wordmark className="font-display text-[15px] font-bold tracking-[-0.02em] text-ink" />
       </div>
 
       <div className="mt-4 px-1">

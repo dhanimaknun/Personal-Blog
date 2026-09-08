@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
-import { site } from "@/lib/site";
+import { Wordmark } from "@/components/Wordmark";
 import { LoginForm } from "./LoginForm";
 
 export const metadata: Metadata = {
@@ -19,8 +19,8 @@ export default async function LoginPage({
   return (
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="w-full max-w-[320px]">
-        <h1 className="text-center font-display text-[22px] font-light tracking-tight text-ink">
-          {site.wordmark}
+        <h1 className="text-center">
+          <Wordmark className="font-display text-[22px] font-extrabold tracking-[-0.03em] text-ink" />
         </h1>
         <p className="mt-1 text-center text-[13px] text-secondary">Sign in to write</p>
         <div className="mt-10">

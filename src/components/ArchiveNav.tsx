@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronDown } from "lucide-react";
+import { ChevronRight } from "lucide-react";
 import type { ArchiveYear } from "@/lib/posts";
 
 const NOW = new Date();
@@ -33,7 +33,7 @@ export function ArchiveNav({
   }
 
   return (
-    <ul className="space-y-3">
+    <ul className="space-y-2.5">
       {years.map((entry) => {
         const isOpen = open.has(entry.year);
         return (
@@ -42,38 +42,41 @@ export function ArchiveNav({
               type="button"
               onClick={() => toggle(entry.year)}
               aria-expanded={isOpen}
-              className="t-sidebar-item flex w-full items-center gap-2 text-ink transition-colors duration-200 ease-out hover:text-accent"
+              className="t-tag flex w-full items-baseline gap-2 text-ink transition-colors duration-200 ease-out hover:text-accent"
             >
-              <ChevronDown
-                className="h-4 w-4 text-secondary transition-transform duration-200 ease-out"
-                style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
-                strokeWidth={1.5}
+              <ChevronRight
+                className="h-3 w-3 shrink-0 translate-y-[1px] text-secondary transition-transform duration-200 ease-out"
+                style={{ transform: isOpen ? "rotate(90deg)" : "rotate(0deg)" }}
+                strokeWidth={1.75}
               />
-              <span>{entry.year}</span>
-              <span className="text-secondary">{entry.total}</span>
+              <span className="flex-1 text-left">{entry.year}</span>
+              <span className="t-mononum text-secondary">({entry.total})</span>
             </button>
 
             {isOpen ? (
-              <ul className="ml-6 mt-3 space-y-2 border-l border-divider pl-4">
+              <ul className="ml-5 mt-2.5 space-y-2">
                 {entry.months.map((m) => {
                   const isActive =
                     active?.year === entry.year && active?.month === m.month;
                   const isCurrent =
                     entry.year === CURRENT_YEAR && m.month === CURRENT_MONTH;
+                  const highlight = isActive || isCurrent;
                   return (
                     <li key={m.month}>
                       <Link
                         href={`/archive/${entry.year}/${String(m.month).padStart(2, "0")}`}
-                        className={`t-tag flex items-baseline justify-between transition-colors duration-200 ease-out hover:text-accent hover:underline ${
-                          isActive
-                            ? "text-accent"
-                            : isCurrent
-                              ? "font-semibold text-ink"
-                              : "text-secondary"
+                        className={`t-tag flex items-baseline gap-2 transition-colors duration-200 ease-out hover:text-accent ${
+                          highlight ? "text-accent" : "text-secondary"
                         }`}
                       >
-                        <span>{m.label}</span>
-                        <span className="tabular-nums">{m.count}</span>
+                        <span
+                          className={`h-1 w-1 shrink-0 translate-y-[-2px] rounded-full ${
+                            highlight ? "bg-accent" : "bg-transparent"
+                          }`}
+                          aria-hidden
+                        />
+                        <span className="flex-1">{m.label}</span>
+                        <span className="t-mononum">({m.count})</span>
                       </Link>
                     </li>
                   );

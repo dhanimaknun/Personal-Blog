@@ -13,7 +13,7 @@ export default function NotFound() {
       </p>
       <Link
         href="/"
-        className="link-underline mt-8 inline-block t-sidebar-item text-accent"
+        className="link-underline mt-8 inline-block text-[15px] text-accent"
       >
         Back to the journal
       </Link>

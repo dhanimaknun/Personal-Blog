@@ -53,7 +53,7 @@ export function AdminPostList({
         <ul className="mt-8 overflow-hidden rounded-lg border border-divider bg-white">
           {posts.map((post) => (
             <li key={post.id} className="group border-b border-divider last:border-b-0">
-              <div className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-[#f5f5f7]">
+              <div className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-[#f1efe8]">
                 <StatusDot post={post} />
                 <Link href={`/admin/posts/${post.id}`} className="min-w-0 flex-1">
                   <p className="truncate text-[15px] text-ink">{post.title}</p>

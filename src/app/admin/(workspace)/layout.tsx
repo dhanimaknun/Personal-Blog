@@ -18,7 +18,7 @@ export default async function WorkspaceLayout({ children }: { children: React.Re
   const stats = await getStats();
 
   return (
-    <div className="flex min-h-screen bg-[#fbfbfd]">
+    <div className="flex min-h-screen bg-[#faf9f6]">
       <AdminSidebar
         counts={{
           published: stats.published,
