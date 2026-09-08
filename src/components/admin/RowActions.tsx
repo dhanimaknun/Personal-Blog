@@ -72,7 +72,7 @@ export function RowActions({ id, actions }: { id: string; actions: Action[] }) {
       </button>
 
       {open ? (
-        <div className="absolute right-0 z-20 mt-1 w-48 overflow-hidden rounded-xl border border-divider bg-white py-1 shadow-lg">
+        <div className="absolute right-0 z-20 mt-1 w-48 overflow-hidden rounded-lg border border-divider bg-white py-1">
           {actions.map((action) => (
             <button
               key={action}

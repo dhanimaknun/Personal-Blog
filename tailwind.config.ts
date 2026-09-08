@@ -9,6 +9,7 @@ const config: Config = {
         ink: "#1D1D1F",
         secondary: "#6E6E73",
         divider: "#E8E8ED",
+        hover: "#111111",
         accent: "#0071E3",
       },
       fontFamily: {
@@ -18,22 +19,27 @@ const config: Config = {
       },
       maxWidth: {
         shell: "1400px",
-        reading: "800px",
+        reading: "820px",
+        sidebar: "280px",
       },
-      lineHeight: {
-        prose: "1.8",
+      spacing: {
+        // 8pt scale — 72px is the only value missing from Tailwind's defaults
+        18: "4.5rem", // 72px
       },
       transitionTimingFunction: {
-        apple: "cubic-bezier(0.4, 0, 0.2, 1)",
+        out: "cubic-bezier(0, 0, 0.2, 1)",
+      },
+      transitionDuration: {
+        DEFAULT: "200ms",
       },
       keyframes: {
         "fade-in": {
-          from: { opacity: "0", transform: "translateY(4px)" },
-          to: { opacity: "1", transform: "translateY(0)" },
+          from: { opacity: "0" },
+          to: { opacity: "1" },
         },
       },
       animation: {
-        "fade-in": "fade-in 300ms cubic-bezier(0.4, 0, 0.2, 1)",
+        "fade-in": "fade-in 300ms cubic-bezier(0, 0, 0.2, 1)",
       },
     },
   },

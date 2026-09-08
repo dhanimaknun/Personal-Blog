@@ -3,14 +3,6 @@ import { getArchive, getTagCounts } from "@/lib/posts";
 import { site } from "@/lib/site";
 import { ArchiveNav } from "@/components/ArchiveNav";
 
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <h2 className="mb-4 text-[12px] font-semibold uppercase tracking-[0.14em] text-secondary">
-      {children}
-    </h2>
-  );
-}
-
 export async function Sidebar({
   activeTag,
   activeArchive,
@@ -21,31 +13,31 @@ export async function Sidebar({
   const [archive, tags] = await Promise.all([getArchive(), getTagCounts()]);
 
   return (
-    <aside className="lg:sticky lg:top-14 lg:max-h-[calc(100vh-7rem)] lg:overflow-y-auto lg:pr-2 thin-scroll">
-      <div className="space-y-12">
+    <aside className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto lg:pr-1 thin-scroll">
+      <div className="space-y-16">
         <section>
-          <p className="text-[14px] leading-[1.7] text-secondary">{site.description}</p>
+          <p className="t-sidebar-item leading-[1.8] text-secondary">{site.description}</p>
         </section>
 
         <section>
-          <SectionLabel>Archive</SectionLabel>
+          <h2 className="t-sidebar-heading mb-6">Archive</h2>
           <ArchiveNav years={archive} active={activeArchive} />
         </section>
 
         <section>
-          <SectionLabel>Tags</SectionLabel>
+          <h2 className="t-sidebar-heading mb-6">Tags</h2>
           {tags.length === 0 ? (
-            <p className="text-[13px] text-secondary">No tags yet.</p>
+            <p className="t-tag text-secondary">No tags yet.</p>
           ) : (
-            <ul className="flex flex-col gap-1.5">
+            <ul className="flex flex-col gap-3">
               {tags.map(({ tag, count }) => {
                 const isActive = activeTag === tag;
                 return (
                   <li key={tag}>
                     <Link
                       href={`/tags/${tag}`}
-                      className={`flex items-center justify-between text-[14px] transition-colors ${
-                        isActive ? "text-accent" : "text-ink hover:text-accent"
+                      className={`t-tag flex items-baseline justify-between transition-colors duration-200 ease-out hover:text-accent hover:underline ${
+                        isActive ? "text-accent" : "text-ink"
                       }`}
                     >
                       <span>#{tag}</span>

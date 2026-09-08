@@ -1,9 +1,9 @@
 import { Masthead } from "@/components/Masthead";
 
 /**
- * The journal's canonical page frame: centred, max 1400px, a 75/25 two
- * column split on desktop that collapses to a single column with the
- * sidebar underneath on tablet and mobile.
+ * The journal's page frame: centred, max 1400px, page padding 24 / 48 / 80,
+ * a fixed 280px sidebar next to a flexible reading column on desktop that
+ * collapses to a single column with the sidebar underneath below `lg`.
  */
 export function PublicShell({
   children,
@@ -17,15 +17,17 @@ export function PublicShell({
   compactMasthead?: boolean;
 }) {
   return (
-    <div className="mx-auto min-h-screen max-w-shell px-6 py-14 sm:px-10 sm:py-20 lg:px-16">
-      <div className="mb-14 sm:mb-20">
-        <Masthead compact={compactMasthead} />
-        {header}
-      </div>
+    <div className="mx-auto max-w-shell px-6 py-16 md:px-12 lg:px-20 lg:py-24">
+      <div className="mx-auto max-w-[1164px]">
+        <div className="mb-24">
+          <Masthead compact={compactMasthead} />
+          {header}
+        </div>
 
-      <div className="grid grid-cols-1 gap-x-16 gap-y-20 lg:grid-cols-[minmax(0,3fr)_minmax(0,1fr)]">
-        <main className="min-w-0">{children}</main>
-        <div className="lg:pt-2">{sidebar}</div>
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-[minmax(0,1fr)_280px] lg:gap-16">
+          <main className="min-w-0">{children}</main>
+          <div>{sidebar}</div>
+        </div>
       </div>
     </div>
   );

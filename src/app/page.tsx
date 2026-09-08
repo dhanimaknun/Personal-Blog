@@ -35,16 +35,13 @@ export default async function HomePage() {
       <PublicShell
         sidebar={<Sidebar />}
         header={
-          <div className="mt-10 flex items-center gap-3 text-secondary">
-            <ArrowDown className="h-4 w-4" strokeWidth={1.5} />
-            <span className="text-[12px] font-semibold uppercase tracking-[0.14em]">Posts</span>
+          <div className="mt-16 flex items-center gap-3 text-secondary">
+            <ArrowDown className="h-[18px] w-[18px]" strokeWidth={1.5} />
+            <span className="t-eyebrow">Posts</span>
           </div>
         }
       >
-        <PostList
-          posts={posts}
-          emptyMessage="No entries published yet."
-        />
+        <PostList posts={posts} emptyMessage="No entries published yet." />
       </PublicShell>
     </>
   );

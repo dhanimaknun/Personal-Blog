@@ -50,7 +50,7 @@ export function AdminPostList({
       {posts.length === 0 ? (
         <p className="mt-16 text-[14px] text-secondary">{emptyMessage}</p>
       ) : (
-        <ul className="mt-8 overflow-hidden rounded-2xl border border-divider bg-white">
+        <ul className="mt-8 overflow-hidden rounded-lg border border-divider bg-white">
           {posts.map((post) => (
             <li key={post.id} className="group border-b border-divider last:border-b-0">
               <div className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-[#f5f5f7]">

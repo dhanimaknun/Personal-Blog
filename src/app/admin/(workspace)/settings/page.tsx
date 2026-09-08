@@ -19,14 +19,14 @@ export default async function SettingsPage() {
     <div className="mx-auto max-w-2xl px-8 py-14">
       <h1 className="font-display text-[28px] font-medium tracking-tight text-ink">Settings</h1>
 
-      <section className="mt-8 rounded-2xl border border-divider bg-white px-5">
+      <section className="mt-8 rounded-lg border border-divider bg-white px-5">
         <Row label="Signed in as" value={session?.username ?? "—"} />
         <Row label="Journal name" value={site.name} />
         <Row label="Author" value={site.author} />
         <Row label="Site URL" value={site.url} />
       </section>
 
-      <div className="mt-8 rounded-2xl border border-divider bg-white p-5 text-[13px] leading-relaxed text-secondary">
+      <div className="mt-8 rounded-lg border border-divider bg-white p-5 text-[13px] leading-relaxed text-secondary">
         <p className="font-medium text-ink">Changing these values</p>
         <p className="mt-2">
           Identity strings live in <code className="text-ink">src/lib/site.ts</code>. Login

@@ -21,13 +21,11 @@ No newsletter pop-ups. No trackers. Just writing.
 
 export default function AboutPage() {
   return (
-    <div className="mx-auto max-w-reading px-6 py-14 sm:py-20">
-      <div className="mb-16">
+    <div className="mx-auto max-w-reading px-6 py-16 md:px-12 lg:py-24">
+      <div className="mb-24">
         <Masthead compact />
       </div>
-      <h1 className="mb-10 font-display text-[36px] font-semibold tracking-tight text-ink sm:text-[48px]">
-        About
-      </h1>
+      <h1 className="t-post-title mb-16 text-ink">About</h1>
       <Markdown>{ABOUT.trim()}</Markdown>
     </div>
   );

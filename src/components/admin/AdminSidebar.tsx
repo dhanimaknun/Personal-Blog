@@ -66,7 +66,7 @@ export function AdminSidebar({ counts }: { counts: Counts }) {
               key={item.href}
               href={item.href}
               className={`flex items-center gap-2.5 rounded-lg px-2.5 py-1.5 text-[13.5px] transition-colors ${
-                active ? "bg-white text-ink shadow-sm" : "text-secondary hover:bg-white/60 hover:text-ink"
+                active ? "bg-white text-ink" : "text-secondary hover:bg-white/60 hover:text-ink"
               }`}
             >
               <Icon className="h-4 w-4" strokeWidth={1.75} />

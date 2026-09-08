@@ -9,7 +9,7 @@ export function PostList({
   emptyMessage?: string;
 }) {
   if (posts.length === 0) {
-    return <p className="py-16 text-[16px] text-secondary">{emptyMessage}</p>;
+    return <p className="t-excerpt py-16 text-secondary">{emptyMessage}</p>;
   }
 
   return (

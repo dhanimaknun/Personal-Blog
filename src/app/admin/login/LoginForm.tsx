@@ -26,7 +26,7 @@ export function LoginForm({ from }: { from?: string }) {
   }
 
   const field =
-    "w-full rounded-xl border border-divider bg-white px-3.5 py-2.5 text-[15px] text-ink transition-colors placeholder:text-secondary focus:border-accent focus:outline-none";
+    "w-full rounded-lg border border-divider bg-white px-3.5 py-2.5 text-[15px] text-ink transition-colors placeholder:text-secondary focus:border-accent focus:outline-none";
 
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-3">
@@ -52,7 +52,7 @@ export function LoginForm({ from }: { from?: string }) {
       <button
         type="submit"
         disabled={loading}
-        className="mt-2 rounded-xl bg-accent py-2.5 text-[15px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
+        className="mt-2 rounded-lg bg-accent py-2.5 text-[15px] font-medium text-white transition-opacity hover:opacity-90 disabled:opacity-50"
       >
         {loading ? "Signing in…" : "Sign in"}
       </button>

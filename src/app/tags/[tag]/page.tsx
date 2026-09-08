@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { PublicShell } from "@/components/PublicShell";
 import { PostList } from "@/components/PostList";
 import { Sidebar } from "@/components/Sidebar";
+import { PageHeading } from "@/components/PageHeading";
 import { getPublishedPosts } from "@/lib/posts";
 import { site, absoluteUrl } from "@/lib/site";
 
@@ -26,16 +27,7 @@ export default async function TagPage({ params }: Props) {
     <PublicShell
       compactMasthead
       sidebar={<Sidebar activeTag={tag} />}
-      header={
-        <div className="mt-10">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-secondary">
-            Tag
-          </p>
-          <h1 className="mt-2 font-display text-[32px] font-semibold tracking-tight text-ink sm:text-[40px]">
-            #{tag}
-          </h1>
-        </div>
-      }
+      header={<PageHeading eyebrow="Tag" title={`#${tag}`} />}
     >
       <PostList posts={posts} emptyMessage={`No entries tagged #${tag}.`} />
     </PublicShell>

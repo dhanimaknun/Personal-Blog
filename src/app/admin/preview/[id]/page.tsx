@@ -19,7 +19,7 @@ export default async function PreviewPage({ params }: { params: { id: string } }
 
   return (
     <>
-      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-divider bg-[#fffbe6] px-6 py-2 text-[12px] text-ink">
+      <div className="sticky top-0 z-10 flex items-center justify-between border-b border-divider bg-[#f5f5f7] px-6 py-2 text-[12px] text-ink">
         <span className="font-semibold uppercase tracking-[0.14em]">
           Preview · {post.status.toLowerCase()}
         </span>

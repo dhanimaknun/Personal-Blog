@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ChevronRight } from "lucide-react";
+import { ChevronDown } from "lucide-react";
 import type { ArchiveYear } from "@/lib/posts";
 
 const NOW = new Date();
@@ -21,7 +21,7 @@ export function ArchiveNav({
   );
 
   if (years.length === 0) {
-    return <p className="text-[13px] text-secondary">No archives yet.</p>;
+    return <p className="t-tag text-secondary">No archives yet.</p>;
   }
 
   function toggle(year: number) {
@@ -33,7 +33,7 @@ export function ArchiveNav({
   }
 
   return (
-    <ul className="space-y-1">
+    <ul className="space-y-3">
       {years.map((entry) => {
         const isOpen = open.has(entry.year);
         return (
@@ -41,21 +41,20 @@ export function ArchiveNav({
             <button
               type="button"
               onClick={() => toggle(entry.year)}
-              className="flex w-full items-center gap-1.5 py-1 text-[14px] text-ink transition-colors hover:text-accent"
               aria-expanded={isOpen}
+              className="t-sidebar-item flex w-full items-center gap-2 text-ink transition-colors duration-200 ease-out hover:text-accent"
             >
-              <ChevronRight
-                className={`h-3.5 w-3.5 text-secondary transition-transform duration-200 ${
-                  isOpen ? "rotate-90" : ""
-                }`}
-                strokeWidth={2}
+              <ChevronDown
+                className="h-4 w-4 text-secondary transition-transform duration-200 ease-out"
+                style={{ transform: isOpen ? "rotate(180deg)" : "rotate(0deg)" }}
+                strokeWidth={1.5}
               />
-              <span className="font-medium">{entry.year}</span>
+              <span>{entry.year}</span>
               <span className="text-secondary">{entry.total}</span>
             </button>
 
             {isOpen ? (
-              <ul className="ml-5 mt-0.5 space-y-0.5 border-l border-divider pl-3">
+              <ul className="ml-6 mt-3 space-y-2 border-l border-divider pl-4">
                 {entry.months.map((m) => {
                   const isActive =
                     active?.year === entry.year && active?.month === m.month;
@@ -65,12 +64,12 @@ export function ArchiveNav({
                     <li key={m.month}>
                       <Link
                         href={`/archive/${entry.year}/${String(m.month).padStart(2, "0")}`}
-                        className={`flex items-center justify-between py-1 text-[13px] transition-colors ${
+                        className={`t-tag flex items-baseline justify-between transition-colors duration-200 ease-out hover:text-accent hover:underline ${
                           isActive
                             ? "text-accent"
                             : isCurrent
-                              ? "font-medium text-ink"
-                              : "text-secondary hover:text-ink"
+                              ? "font-semibold text-ink"
+                              : "text-secondary"
                         }`}
                       >
                         <span>{m.label}</span>

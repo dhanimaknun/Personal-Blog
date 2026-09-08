@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { PublicShell } from "@/components/PublicShell";
 import { PostList } from "@/components/PostList";
 import { Sidebar } from "@/components/Sidebar";
+import { PageHeading } from "@/components/PageHeading";
 import { getPostsByMonth } from "@/lib/posts";
 import { monthName } from "@/lib/dates";
 import { site, absoluteUrl } from "@/lib/site";
@@ -43,16 +44,7 @@ export default async function ArchiveMonthPage({ params }: Props) {
     <PublicShell
       compactMasthead
       sidebar={<Sidebar activeArchive={parsed} />}
-      header={
-        <div className="mt-10">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-secondary">
-            Archive
-          </p>
-          <h1 className="mt-2 font-display text-[32px] font-semibold tracking-tight text-ink sm:text-[40px]">
-            {label}
-          </h1>
-        </div>
-      }
+      header={<PageHeading eyebrow="Archive" title={label} />}
     >
       <PostList posts={posts} emptyMessage={`No entries from ${label}.`} />
     </PublicShell>

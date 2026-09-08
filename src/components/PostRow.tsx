@@ -5,39 +5,39 @@ import type { PostListItem } from "@/lib/posts";
 
 export function PostRow({ post }: { post: PostListItem }) {
   const date = verticalDate(post.publishedAt ?? post.createdAt);
+  const iso = new Date(post.publishedAt ?? post.createdAt).toISOString();
 
   return (
     <article className="border-t border-divider first:border-t-0">
-      <Link
-        href={`/${post.slug}`}
-        className="group flex gap-6 py-10 sm:gap-10 sm:py-12"
-      >
+      <Link href={`/${post.slug}`} className="group flex gap-8 py-14 sm:gap-16">
         {/* vertical date */}
         <time
-          dateTime={new Date(post.publishedAt ?? post.createdAt).toISOString()}
-          className="flex w-12 shrink-0 flex-col items-start font-sans text-[13px] font-medium uppercase leading-tight tracking-wide text-secondary"
+          dateTime={iso}
+          className="flex w-16 shrink-0 flex-col items-start leading-none"
         >
-          <span className="text-[18px] font-semibold text-ink">{date.day}</span>
-          <span>{date.month}</span>
-          <span>{date.year}</span>
+          <span className="t-date-num text-ink">{date.day}</span>
+          <span className="t-month mt-3 text-ink">{date.month}</span>
+          <span className="t-year mt-2">{date.year}</span>
         </time>
 
         {/* body */}
         <div className="min-w-0 flex-1">
-          <h2 className="font-display text-[28px] font-semibold leading-[1.12] tracking-tight text-ink transition-colors duration-200 group-hover:text-accent sm:text-[40px] lg:text-[48px]">
+          <h2 className="t-post-title max-w-[720px] text-ink transition-colors duration-200 ease-out group-hover:text-accent">
             {post.title}
           </h2>
 
           {post.excerpt ? (
-            <p className="mt-4 line-clamp-3 max-w-[60ch] text-[16px] leading-[1.7] text-secondary">
+            <p className="t-excerpt mt-6 line-clamp-3 max-w-[640px] text-secondary">
               {post.excerpt}
             </p>
           ) : null}
 
           {post.tags.length > 0 ? (
-            <ul className="mt-5 flex flex-wrap gap-x-4 gap-y-1 text-[14px] text-secondary">
+            <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2">
               {post.tags.map((tag) => (
-                <li key={tag}>#{tag}</li>
+                <li key={tag} className="t-tag text-secondary">
+                  #{tag}
+                </li>
               ))}
             </ul>
           ) : null}
@@ -46,7 +46,7 @@ export function PostRow({ post }: { post: PostListItem }) {
         {/* arrow */}
         <div className="hidden shrink-0 items-center self-center sm:flex">
           <ArrowRight
-            className="h-5 w-5 text-secondary transition-all duration-200 group-hover:translate-x-1.5 group-hover:text-accent"
+            className="h-[18px] w-[18px] text-secondary transition-transform duration-200 ease-out group-hover:translate-x-1.5 group-hover:text-accent"
             strokeWidth={1.5}
           />
         </div>

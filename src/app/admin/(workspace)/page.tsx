@@ -45,7 +45,7 @@ export default async function DashboardPage() {
       </p>
 
       {/* Continue writing card */}
-      <div className="mt-10 rounded-2xl border border-divider bg-white p-6">
+      <div className="mt-10 rounded-lg border border-divider bg-white p-6">
         {continueTarget ? (
           <>
             <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-secondary">
@@ -59,7 +59,7 @@ export default async function DashboardPage() {
             </p>
             <Link
               href={`/admin/posts/${continueTarget.id}`}
-              className="mt-5 inline-flex items-center gap-2 rounded-xl bg-ink px-4 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
+              className="mt-5 inline-flex items-center gap-2 rounded-lg bg-ink px-4 py-2.5 text-[14px] font-medium text-white transition-opacity hover:opacity-90"
             >
               Continue writing
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
@@ -90,7 +90,7 @@ export default async function DashboardPage() {
         </div>
 
         {stats.mostUsedTags.length > 0 ? (
-          <div className="mt-4 rounded-2xl border border-divider bg-white p-5">
+          <div className="mt-4 rounded-lg border border-divider bg-white p-5">
             <p className="text-[13px] text-secondary">Most used tags</p>
             <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5 text-[14px] text-ink">
               {stats.mostUsedTags.map((t) => (

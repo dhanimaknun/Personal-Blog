@@ -26,22 +26,21 @@ export default async function SearchPage({
       compactMasthead
       sidebar={<Sidebar />}
       header={
-        <div className="mt-10">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.14em] text-secondary">
-            Search
-          </p>
-          <form action="/search" className="mt-3 border-b border-ink pb-2">
+        <div className="mt-16">
+          <p className="t-eyebrow">Search</p>
+          <form action="/search" className="mt-4 border-b border-ink pb-3">
             <input
               type="search"
               name="q"
               defaultValue={query}
               autoFocus
+              aria-label="Search the journal"
               placeholder="Type and press enter"
-              className="w-full bg-transparent font-display text-[28px] font-light tracking-tight text-ink placeholder:text-divider focus:outline-none sm:text-[36px]"
+              className="w-full bg-transparent font-display text-[32px] font-light tracking-[-0.02em] text-ink placeholder:text-divider focus:outline-none md:text-[48px]"
             />
           </form>
           {query ? (
-            <p className="mt-4 text-[14px] text-secondary">
+            <p className="mt-6 t-tag text-secondary">
               {posts.length} result{posts.length === 1 ? "" : "s"} for “{query}”
             </p>
           ) : null}

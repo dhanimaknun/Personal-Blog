@@ -315,7 +315,7 @@ export function Editor({ initial }: { initial: Post }) {
               <MoreHorizontal className="h-4 w-4" />
             </button>
             {menuOpen ? (
-              <div className="absolute right-0 z-40 mt-1 w-44 overflow-hidden rounded-xl border border-divider bg-white py-1 shadow-lg">
+              <div className="absolute right-0 z-40 mt-1 w-44 overflow-hidden rounded-lg border border-divider bg-white py-1">
                 <button onClick={() => save({ autosave: false })} className="menu-item">
                   Save now
                 </button>
@@ -444,7 +444,7 @@ function ViewToggle({ view, setView }: { view: ViewMode; setView: (v: ViewMode) 
           onClick={() => setView(key)}
           title={label}
           className={`rounded-md p-1.5 transition-colors ${
-            view === key ? "bg-white text-ink shadow-sm" : "text-secondary hover:text-ink"
+            view === key ? "bg-white text-ink" : "text-secondary hover:text-ink"
           }`}
         >
           <Icon className="h-3.5 w-3.5" />

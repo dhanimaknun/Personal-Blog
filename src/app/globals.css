@@ -4,11 +4,11 @@
 
 :root {
   /* Apple system fonts first (real SF Pro on Apple devices), Inter as the
-     downloaded fallback everywhere else. */
+     downloaded fallback everywhere else. One family, weights do the work. */
   --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
-    var(--font-inter), "Segoe UI", system-ui, sans-serif;
+    var(--font-inter), "Inter", system-ui, sans-serif;
   --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text",
-    var(--font-inter), "Segoe UI", system-ui, sans-serif;
+    var(--font-inter), "Inter", system-ui, sans-serif;
   --font-mono: var(--font-mono-src), ui-monospace, SFMono-Regular, "SF Mono",
     Menlo, Consolas, monospace;
 
@@ -27,22 +27,21 @@
     background-color: #ffffff;
     color: #1d1d1f;
     font-family: var(--font-sans);
-    font-feature-settings: "kern", "liga", "calt";
-    letter-spacing: -0.011em;
+    font-feature-settings: "kern", "liga";
   }
 
   ::selection {
-    background: rgba(0, 113, 227, 0.16);
+    background: #d6e9ff;
+    color: #1d1d1f;
+  }
+
+  h1, h2, h3, h4 {
+    font-family: var(--font-display);
   }
 
   a {
     color: inherit;
     text-decoration: none;
-  }
-
-  h1, h2, h3, h4 {
-    font-family: var(--font-display);
-    letter-spacing: -0.022em;
   }
 
   :focus-visible {
@@ -53,26 +52,153 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  * {
+  *, *::before, *::after {
     animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
 }
 
 /* ─────────────────────────────────────────────────────────────
-   Reading typography for rendered Markdown (post page + preview)
+   Scrollbar — thin, light grey, rounded; hidden on mobile
+   ───────────────────────────────────────────────────────────── */
+@media (min-width: 641px) {
+  body,
+  .thin-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: #d2d2d7 transparent;
+  }
+  body::-webkit-scrollbar,
+  .thin-scroll::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  body::-webkit-scrollbar-thumb,
+  .thin-scroll::-webkit-scrollbar-thumb {
+    background: #d2d2d7;
+    border-radius: 999px;
+  }
+  body::-webkit-scrollbar-track,
+  .thin-scroll::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+@media (max-width: 640px) {
+  .thin-scroll::-webkit-scrollbar { display: none; }
+  .thin-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Type scale — driven entirely by weight, one family
+   ───────────────────────────────────────────────────────────── */
+@layer components {
+  .t-blog-title {
+    font-family: var(--font-display);
+    font-size: 48px;
+    font-weight: 300;
+    letter-spacing: -0.04em;
+    line-height: 1;
+  }
+  .t-author {
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    color: #6e6e73;
+  }
+  .t-post-title {
+    font-family: var(--font-display);
+    font-size: 32px;
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+  }
+  .t-excerpt {
+    font-size: 18px;
+    font-weight: 400;
+    line-height: 1.8;
+  }
+  .t-eyebrow {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #6e6e73;
+  }
+  .t-sidebar-heading {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: #6e6e73;
+  }
+  .t-sidebar-item {
+    font-size: 16px;
+    font-weight: 400;
+  }
+  .t-tag {
+    font-size: 14px;
+    font-weight: 500;
+  }
+  .t-date-num {
+    font-family: var(--font-display);
+    font-size: 40px;
+    font-weight: 300;
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .t-month {
+    font-size: 16px;
+    font-weight: 500;
+    text-transform: uppercase;
+  }
+  .t-year {
+    font-size: 14px;
+    font-weight: 400;
+    color: #6e6e73;
+  }
+
+  @media (min-width: 768px) {
+    .t-blog-title { font-size: 72px; }
+    .t-post-title { font-size: 48px; }
+    .t-date-num { font-size: 56px; }
+    .t-month { font-size: 18px; }
+    .t-year { font-size: 16px; }
+  }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Animated underline for inline links
+   ───────────────────────────────────────────────────────────── */
+.link-underline {
+  background-image: linear-gradient(#0071e3, #0071e3);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 200ms cubic-bezier(0, 0, 0.2, 1), color 200ms cubic-bezier(0, 0, 0.2, 1);
+}
+.link-underline:hover {
+  color: #0071e3;
+  background-size: 100% 1px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Rendered Markdown (post body + editor preview)
    ───────────────────────────────────────────────────────────── */
 .prose-journal {
   font-family: var(--font-sans);
-  font-size: 1.1875rem;
-  line-height: 1.8;
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.9;
   color: #1d1d1f;
   max-width: 70ch;
 }
+@media (min-width: 768px) {
+  .prose-journal { font-size: 20px; }
+}
 
 .prose-journal > * + * {
-  margin-top: 1.6em;
+  margin-top: 24px;
 }
 
 .prose-journal h1,
@@ -80,44 +206,52 @@
 .prose-journal h3,
 .prose-journal h4 {
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 1.25;
-  letter-spacing: -0.022em;
-  margin-top: 2.2em;
-  margin-bottom: -0.4em;
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  margin-top: 64px;
+  margin-bottom: -8px;
 }
-
-.prose-journal h1 { font-size: 1.9em; }
-.prose-journal h2 { font-size: 1.45em; }
-.prose-journal h3 { font-size: 1.2em; }
-.prose-journal h4 { font-size: 1.05em; }
+.prose-journal h1 { font-size: 40px; }
+.prose-journal h2 { font-size: 30px; }
+.prose-journal h3 { font-size: 24px; }
+.prose-journal h4 { font-size: 20px; }
+@media (min-width: 768px) {
+  .prose-journal h1 { font-size: 48px; }
+  .prose-journal h2 { font-size: 36px; }
+  .prose-journal h3 { font-size: 28px; }
+  .prose-journal h4 { font-size: 22px; }
+}
 
 .prose-journal a {
   color: #0071e3;
-  text-decoration: none;
+  background-image: linear-gradient(#0071e3, #0071e3);
+  background-size: 100% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  padding-bottom: 1px;
 }
 .prose-journal a:hover {
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  background-size: 100% 1px;
+  opacity: 0.7;
 }
 
 .prose-journal strong { font-weight: 600; }
 
 .prose-journal blockquote {
-  border-left: 2px solid #1d1d1f;
-  padding-left: 1.4em;
+  border-left: 2px solid #d2d2d7;
+  padding-left: 24px;
   margin-left: 0;
   color: #6e6e73;
-  font-style: normal;
 }
 
 .prose-journal ul,
 .prose-journal ol {
-  padding-left: 1.4em;
+  padding-left: 24px;
 }
 .prose-journal ul { list-style: disc; }
 .prose-journal ol { list-style: decimal; }
-.prose-journal li { margin-top: 0.5em; }
+.prose-journal li { margin-top: 12px; }
 .prose-journal li::marker { color: #6e6e73; }
 
 .prose-journal ul.contains-task-list {
@@ -126,32 +260,30 @@
 }
 .prose-journal .task-list-item {
   display: flex;
-  gap: 0.6em;
+  gap: 12px;
   align-items: baseline;
 }
-.prose-journal .task-list-item input {
-  accent-color: #0071e3;
-}
+.prose-journal .task-list-item input { accent-color: #0071e3; }
 
 .prose-journal code {
   font-family: var(--font-mono);
-  font-size: 0.86em;
+  font-size: 0.85em;
   background: #f5f5f7;
   padding: 0.15em 0.4em;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .prose-journal pre {
   background: #f5f5f7;
-  border: 1px solid #e8e8ed;
-  border-radius: 10px;
-  padding: 1.15em 1.3em;
+  border-radius: 8px;
+  padding: 24px;
   overflow-x: auto;
-  font-size: 0.9rem;
+  font-size: 15px;
   line-height: 1.7;
 }
-.prose-journal pre code {
-  background: none;
+.prose-journal pre code,
+.prose-journal pre code.hljs {
+  background: transparent;
   padding: 0;
   font-size: inherit;
 }
@@ -159,14 +291,14 @@
 .prose-journal table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 0.95em;
+  font-size: 16px;
   display: block;
   overflow-x: auto;
 }
 .prose-journal th,
 .prose-journal td {
   border-bottom: 1px solid #e8e8ed;
-  padding: 0.6em 0.9em;
+  padding: 12px 16px;
   text-align: left;
 }
 .prose-journal th {
@@ -177,25 +309,13 @@
 .prose-journal hr {
   border: none;
   border-top: 1px solid #e8e8ed;
-  margin: 2.6em 0;
+  margin: 56px 0;
 }
 
 .prose-journal img {
+  display: block;
+  margin: 40px auto;
   max-width: 100%;
   height: auto;
-  border-radius: 10px;
-}
-
-@layer components {
-  .menu-item {
-    @apply w-full px-3.5 py-2 text-left text-[13px] text-ink transition-colors hover:bg-[#f5f5f7];
-  }
-}
-
-/* Thin scrollbars for editor / code blocks */
-.thin-scroll::-webkit-scrollbar { width: 10px; height: 10px; }
-.thin-scroll::-webkit-scrollbar-thumb {
-  background: #d2d2d7;
-  border-radius: 999px;
-  border: 3px solid #fff;
+  border-radius: 8px;
 }
