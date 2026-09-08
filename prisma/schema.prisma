@@ -1,0 +1,57 @@
+// THE JOURNAL — data model.
+// PostgreSQL (Supabase) for both development and production.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+model Post {
+  id          String     @id @default(cuid())
+  title       String     @default("Untitled Draft")
+  slug        String     @unique
+  content     String     @default("")
+  excerpt     String     @default("")
+  tags        String[]   @default([])
+  status      PostStatus @default(DRAFT)
+  readingTime Int        @default(1)
+
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  publishedAt DateTime?
+  deletedAt   DateTime?
+
+  versions PostVersion[]
+
+  @@index([status, publishedAt])
+  @@index([deletedAt])
+  @@index([updatedAt])
+}
+
+// A lightweight snapshot taken on autosave / publish, powering version history.
+model PostVersion {
+  id      String @id @default(cuid())
+  postId  String
+  post    Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  title   String
+  content String
+  excerpt String
+  tags    String[] @default([])
+  label   String   @default("autosave")
+
+  createdAt DateTime @default(now())
+
+  @@index([postId, createdAt])
+}
