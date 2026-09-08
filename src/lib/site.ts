@@ -2,6 +2,8 @@
 
 export const site = {
   name: "THE JOURNAL",
+  // Stylised wordmark shown in the visible header / masthead.
+  wordmark: "THE JOURNAL.",
   author: "DHAN",
   byline: "by DHAN",
   description:

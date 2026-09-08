@@ -35,7 +35,7 @@ export default async function DashboardPage() {
   return (
     <div className="mx-auto max-w-3xl px-8 py-16">
       <p className="font-display text-[15px] font-light tracking-tight text-secondary">
-        {site.name}
+        {site.wordmark}
       </p>
       <h1 className="mt-3 font-display text-[40px] font-light leading-tight tracking-tight text-ink">
         {greeting()}, {name}.

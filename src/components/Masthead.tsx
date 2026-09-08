@@ -12,14 +12,14 @@ export function Masthead({ compact = false }: { compact?: boolean }) {
         href="/"
         className="link-underline inline-block font-display text-[22px] font-light tracking-[-0.03em] text-ink"
       >
-        {site.name}
+        {site.wordmark}
       </Link>
     );
   }
 
   return (
     <header>
-      <h1 className="t-blog-title text-ink">{site.name}</h1>
+      <h1 className="t-blog-title text-ink">{site.wordmark}</h1>
       <p className="t-author mt-4">{site.byline}</p>
     </header>
   );

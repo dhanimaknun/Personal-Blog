@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
+import { site } from "@/lib/site";
 import { LoginForm } from "./LoginForm";
 
 export const metadata: Metadata = {
@@ -19,7 +20,7 @@ export default async function LoginPage({
     <div className="flex min-h-screen items-center justify-center px-6">
       <div className="w-full max-w-[320px]">
         <h1 className="text-center font-display text-[22px] font-light tracking-tight text-ink">
-          THE JOURNAL
+          {site.wordmark}
         </h1>
         <p className="mt-1 text-center text-[13px] text-secondary">Sign in to write</p>
         <div className="mt-10">
