@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getArchive, getTagCounts } from "@/lib/posts";
 import { site } from "@/lib/site";
 import { ArchiveNav } from "@/components/ArchiveNav";
+import { FishMark } from "@/components/FishMark";
 
 function Rule() {
   return <hr className="border-0 border-t border-divider" />;
@@ -19,7 +20,10 @@ export async function Sidebar({
   return (
     <aside className="lg:sticky lg:top-20 lg:max-h-[calc(100vh-10rem)] lg:overflow-y-auto lg:pr-1 thin-scroll">
       <div className="space-y-8">
-        <p className="t-blurb">{site.intro}</p>
+        <div>
+          <FishMark size={40} className="-ml-1 mb-4" />
+          <p className="t-blurb">{site.intro}</p>
+        </div>
 
         <Rule />
 
