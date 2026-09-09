@@ -1,12 +1,17 @@
 // Image uploads → Supabase Storage, via the Storage REST API (no SDK).
 //
 // Setup (one time):
-//   1. Supabase dashboard → Storage → New bucket → name it "post-images",
-//      make it PUBLIC.
-//   2. Add env var SUPABASE_SERVICE_ROLE_KEY  (Settings → API → service_role).
-//      Optionally SUPABASE_URL (otherwise derived from DATABASE_URL).
+//   1. Supabase → Storage → New bucket → name it "post-images", make it PUBLIC.
+//   2. Supabase → Settings → API Keys → "Secret keys" → reveal the `sb_secret_…`
+//      key (or the legacy `service_role` key). Add it as env var
+//      SUPABASE_SERVICE_ROLE_KEY (SUPABASE_SECRET_KEY also accepted).
+//   3. Optionally SUPABASE_URL — otherwise derived from DATABASE_URL.
 
 const BUCKET = "post-images";
+
+function secretKey(): string | undefined {
+  return process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_SECRET_KEY;
+}
 
 function supabaseUrl(): string | null {
   if (process.env.SUPABASE_URL) return process.env.SUPABASE_URL.replace(/\/$/, "");
@@ -17,7 +22,7 @@ function supabaseUrl(): string | null {
 }
 
 export function uploadsConfigured(): boolean {
-  return Boolean(supabaseUrl() && process.env.SUPABASE_SERVICE_ROLE_KEY);
+  return Boolean(supabaseUrl() && secretKey());
 }
 
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);
@@ -25,7 +30,7 @@ const MAX_BYTES = 8 * 1024 * 1024;
 
 export async function uploadImage(file: File): Promise<{ url: string }> {
   const base = supabaseUrl();
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  const key = secretKey();
   if (!base || !key) throw new UploadError("Image upload is not configured.", 501);
 
   if (!ALLOWED.has(file.type)) throw new UploadError("Unsupported image type.", 415);
@@ -38,6 +43,8 @@ export async function uploadImage(file: File): Promise<{ url: string }> {
   const res = await fetch(`${base}/storage/v1/object/${BUCKET}/${path}`, {
     method: "POST",
     headers: {
+      // works for both legacy service_role JWTs and the new sb_secret_… keys
+      apikey: key,
       Authorization: `Bearer ${key}`,
       "Content-Type": file.type,
       "x-upsert": "false",
@@ -50,7 +57,7 @@ export async function uploadImage(file: File): Promise<{ url: string }> {
     const detail = await res.text().catch(() => "");
     throw new UploadError(
       `Storage upload failed (${res.status}). ${detail.slice(0, 200)}`,
-      502,
+      res.status === 400 || res.status === 404 ? 400 : 502,
     );
   }
 
