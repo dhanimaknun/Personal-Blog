@@ -15,6 +15,16 @@ import {
   Redo2,
   Sparkles,
   MoreHorizontal,
+  Bold,
+  Italic,
+  Underline,
+  Strikethrough,
+  Quote,
+  Image as ImageIcon,
+  Heading2,
+  List,
+  Link2,
+  Code2,
 } from "lucide-react";
 import type { Post } from "@prisma/client";
 import { api } from "@/lib/client";
@@ -183,6 +193,12 @@ export function Editor({ initial }: { initial: Post }) {
         e.preventDefault();
         e.shiftKey ? redo() : undo();
       }
+      if (meta && e.target === contentRef.current) {
+        const k = e.key.toLowerCase();
+        if (k === "b") { e.preventDefault(); format("bold"); }
+        else if (k === "i") { e.preventDefault(); format("italic"); }
+        else if (k === "u") { e.preventDefault(); format("underline"); }
+      }
     }
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -201,6 +217,104 @@ export function Editor({ initial }: { initial: Post }) {
     pushHistory({ ...current, [key]: value });
     if (key === "title" && status === "DRAFT" && slug === slugify(lastSaved.current.title)) {
       setSlug(slugify(value));
+    }
+  }
+
+  // ---- markdown formatting toolbar ----
+  const contentRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
+
+  function replaceRange(from: number, to: number, text: string, selStart: number, selEnd: number) {
+    const next = content.slice(0, from) + text + content.slice(to);
+    onField("content", next);
+    requestAnimationFrame(() => {
+      const el = contentRef.current;
+      if (!el) return;
+      el.focus();
+      el.setSelectionRange(selStart, selEnd);
+    });
+  }
+
+  function surround(before: string, after = before) {
+    const el = contentRef.current;
+    if (!el) return;
+    const { selectionStart: s, selectionEnd: e } = el;
+    const sel = content.slice(s, e);
+    // toggle off if already wrapped
+    if (
+      content.slice(s - before.length, s) === before &&
+      content.slice(e, e + after.length) === after
+    ) {
+      replaceRange(s - before.length, e + after.length, sel, s - before.length, e - before.length);
+      return;
+    }
+    replaceRange(s, e, before + sel + after, s + before.length, e + before.length);
+  }
+
+  function prefixLines(prefix: string) {
+    const el = contentRef.current;
+    if (!el) return;
+    const { selectionStart: s, selectionEnd: e } = el;
+    const start = content.lastIndexOf("\n", s - 1) + 1;
+    const block = content.slice(start, e);
+    const lines = block.split("\n");
+    const allPrefixed = lines.every((l) => l.startsWith(prefix));
+    const updated = lines
+      .map((l) => (allPrefixed ? l.slice(prefix.length) : prefix + l))
+      .join("\n");
+    replaceRange(start, e, updated, start, start + updated.length);
+  }
+
+  function insertAtCursor(text: string) {
+    const el = contentRef.current;
+    const s = el?.selectionStart ?? content.length;
+    replaceRange(s, s, text, s + text.length, s + text.length);
+  }
+
+  async function uploadFile(file: File) {
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || `Upload failed (${res.status})`);
+      const alt = file.name.replace(/\.[^.]+$/, "") || "image";
+      insertAtCursor(`\n\n![${alt}](${data.url})\n\n`);
+    } catch (err) {
+      const url = window.prompt(
+        `${(err as Error).message}\n\nPaste an image URL to insert instead:`,
+      );
+      if (url) insertAtCursor(`\n\n![image](${url.trim()})\n\n`);
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  function format(kind: string) {
+    switch (kind) {
+      case "bold": return surround("**");
+      case "italic": return surround("_");
+      case "underline": return surround("++");
+      case "strike": return surround("~~");
+      case "code": return surround("`");
+      case "quote": return prefixLines("> ");
+      case "h2": return prefixLines("## ");
+      case "list": return prefixLines("- ");
+      case "link": {
+        const el = contentRef.current;
+        if (!el) return;
+        const sel = content.slice(el.selectionStart, el.selectionEnd) || "text";
+        return replaceRange(
+          el.selectionStart,
+          el.selectionEnd,
+          `[${sel}](url)`,
+          el.selectionStart + sel.length + 3,
+          el.selectionStart + sel.length + 6,
+        );
+      }
+      case "image": return fileInputRef.current?.click();
     }
   }
 
@@ -389,14 +503,48 @@ export function Editor({ initial }: { initial: Post }) {
                   </button>
                 </div>
 
-                <div className="my-6 h-px bg-divider" />
+                <div className="mt-6 border-t border-divider" />
+
+                <FormatBar onFormat={format} uploading={uploading} />
+
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) uploadFile(f);
+                    e.target.value = "";
+                  }}
+                />
 
                 <textarea
+                  ref={contentRef}
                   value={content}
                   onChange={(e) => onField("content", e.target.value)}
+                  onPaste={(e) => {
+                    const item = Array.from(e.clipboardData.items).find((i) =>
+                      i.type.startsWith("image/"),
+                    );
+                    const file = item?.getAsFile();
+                    if (file) {
+                      e.preventDefault();
+                      uploadFile(file);
+                    }
+                  }}
+                  onDrop={(e) => {
+                    const file = Array.from(e.dataTransfer.files).find((f) =>
+                      f.type.startsWith("image/"),
+                    );
+                    if (file) {
+                      e.preventDefault();
+                      uploadFile(file);
+                    }
+                  }}
                   placeholder="Write in Markdown…"
                   spellCheck
-                  className="thin-scroll min-h-[60vh] w-full resize-none bg-transparent font-mono text-[14px] leading-[1.75] text-ink placeholder:text-divider focus:outline-none"
+                  className="thin-scroll mt-4 min-h-[60vh] w-full resize-none bg-transparent font-mono text-[14px] leading-[1.75] text-ink placeholder:text-divider focus:outline-none"
                 />
 
                 <p className="mt-4 text-[12px] tabular-nums text-secondary">
@@ -426,6 +574,57 @@ export function Editor({ initial }: { initial: Post }) {
           <HistoryPanel postId={initial.id} onClose={() => setShowHistory(false)} onRestored={() => router.refresh()} />
         ) : null}
       </div>
+    </div>
+  );
+}
+
+function FormatBar({
+  onFormat,
+  uploading,
+}: {
+  onFormat: (kind: string) => void;
+  uploading: boolean;
+}) {
+  const groups: { kind: string; icon: typeof Bold; label: string }[][] = [
+    [
+      { kind: "bold", icon: Bold, label: "Bold  ⌘B" },
+      { kind: "italic", icon: Italic, label: "Italic  ⌘I" },
+      { kind: "underline", icon: Underline, label: "Underline  ⌘U" },
+      { kind: "strike", icon: Strikethrough, label: "Strikethrough" },
+    ],
+    [
+      { kind: "h2", icon: Heading2, label: "Heading" },
+      { kind: "quote", icon: Quote, label: "Quote" },
+      { kind: "list", icon: List, label: "List" },
+      { kind: "code", icon: Code2, label: "Code" },
+      { kind: "link", icon: Link2, label: "Link" },
+    ],
+    [{ kind: "image", icon: ImageIcon, label: "Insert image" }],
+  ];
+
+  return (
+    <div className="mt-4 flex flex-wrap items-center gap-1">
+      {groups.map((group, gi) => (
+        <div key={gi} className="flex items-center gap-0.5">
+          {gi > 0 && <span className="mx-1.5 h-4 w-px bg-divider" />}
+          {group.map(({ kind, icon: Icon, label }) => (
+            <button
+              key={kind}
+              type="button"
+              title={label}
+              onClick={() => onFormat(kind)}
+              disabled={kind === "image" && uploading}
+              className="rounded-md p-1.5 text-secondary transition-colors hover:bg-divider/50 hover:text-ink disabled:opacity-40"
+            >
+              {kind === "image" && uploading ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Icon className="h-4 w-4" strokeWidth={1.75} />
+              )}
+            </button>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }

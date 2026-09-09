@@ -6,6 +6,8 @@ export const site = {
   wordmark: "THE JOURNAL.",
   author: "DHAN",
   byline: "by DHAN",
+  // Name shown in the footer copyright line.
+  copyrightName: "dhanimaknun",
   description:
     "A minimalist editorial journal. Notes on life, technology, and the things worth slowing down for.",
   // Short mono blurbs at the top and foot of the sidebar.

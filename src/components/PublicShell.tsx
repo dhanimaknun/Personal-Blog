@@ -1,4 +1,5 @@
 import { Masthead } from "@/components/Masthead";
+import { SiteFooter } from "@/components/SiteFooter";
 
 /**
  * Page frame: centred, max 1400px, page padding 24 / 48 / 64, a fixed
@@ -25,7 +26,10 @@ export function PublicShell({
         </div>
 
         <div className="grid grid-cols-1 gap-14 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-0">
-          <main className="min-w-0 lg:pr-16">{children}</main>
+          <main className="min-w-0 lg:pr-16">
+            {children}
+            <SiteFooter />
+          </main>
           <div className="lg:border-l lg:border-divider lg:pl-14">{sidebar}</div>
         </div>
       </div>

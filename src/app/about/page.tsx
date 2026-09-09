@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Masthead } from "@/components/Masthead";
 import { Markdown } from "@/components/Markdown";
+import { SiteFooter } from "@/components/SiteFooter";
 import { site, absoluteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -27,6 +28,7 @@ export default function AboutPage() {
       </div>
       <h1 className="t-post-title mb-16 text-ink">About</h1>
       <Markdown>{ABOUT.trim()}</Markdown>
+      <SiteFooter />
     </div>
   );
 }

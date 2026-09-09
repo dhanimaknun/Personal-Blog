@@ -1,0 +1,66 @@
+// Image uploads → Supabase Storage, via the Storage REST API (no SDK).
+//
+// Setup (one time):
+//   1. Supabase dashboard → Storage → New bucket → name it "post-images",
+//      make it PUBLIC.
+//   2. Add env var SUPABASE_SERVICE_ROLE_KEY  (Settings → API → service_role).
+//      Optionally SUPABASE_URL (otherwise derived from DATABASE_URL).
+
+const BUCKET = "post-images";
+
+function supabaseUrl(): string | null {
+  if (process.env.SUPABASE_URL) return process.env.SUPABASE_URL.replace(/\/$/, "");
+  // derive from the pooled connection string: postgres.<ref>:pw@...
+  const db = process.env.DATABASE_URL ?? "";
+  const ref = db.match(/postgres\.([a-z0-9]+):/)?.[1];
+  return ref ? `https://${ref}.supabase.co` : null;
+}
+
+export function uploadsConfigured(): boolean {
+  return Boolean(supabaseUrl() && process.env.SUPABASE_SERVICE_ROLE_KEY);
+}
+
+const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);
+const MAX_BYTES = 8 * 1024 * 1024;
+
+export async function uploadImage(file: File): Promise<{ url: string }> {
+  const base = supabaseUrl();
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!base || !key) throw new UploadError("Image upload is not configured.", 501);
+
+  if (!ALLOWED.has(file.type)) throw new UploadError("Unsupported image type.", 415);
+  if (file.size > MAX_BYTES) throw new UploadError("Image is larger than 8 MB.", 413);
+
+  const ext = (file.name.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const name = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const path = `${new Date().getUTCFullYear()}/${name}`;
+
+  const res = await fetch(`${base}/storage/v1/object/${BUCKET}/${path}`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${key}`,
+      "Content-Type": file.type,
+      "x-upsert": "false",
+      "cache-control": "public, max-age=31536000, immutable",
+    },
+    body: Buffer.from(await file.arrayBuffer()),
+  });
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "");
+    throw new UploadError(
+      `Storage upload failed (${res.status}). ${detail.slice(0, 200)}`,
+      502,
+    );
+  }
+
+  return { url: `${base}/storage/v1/object/public/${BUCKET}/${path}` };
+}
+
+export class UploadError extends Error {
+  status: number;
+  constructor(message: string, status = 400) {
+    super(message);
+    this.status = status;
+  }
+}

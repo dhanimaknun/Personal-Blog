@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, ArrowUpLeft } from "lucide-react";
 import { Markdown } from "@/components/Markdown";
 import { Masthead } from "@/components/Masthead";
+import { SiteFooter } from "@/components/SiteFooter";
 import { getAdjacentPosts, getPublishedPostBySlug } from "@/lib/posts";
 import { longDate } from "@/lib/dates";
 import { site, absoluteUrl } from "@/lib/site";
@@ -150,6 +151,8 @@ export default async function PostPage({ params }: Props) {
             Back to the journal
           </Link>
         </nav>
+
+        <SiteFooter />
       </div>
     </>
   );

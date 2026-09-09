@@ -249,6 +249,9 @@
 .prose-journal a:hover { opacity: 0.7; }
 
 .prose-journal strong { font-weight: 600; }
+.prose-journal em { font-style: italic; }
+.prose-journal u { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.prose-journal del { color: #6e6e73; }
 
 .prose-journal blockquote {
   border-left: 2px solid var(--accent);
