@@ -18,8 +18,8 @@ export function Masthead({ compact = false }: { compact?: boolean }) {
   }
 
   return (
-    <header className="flex items-center gap-5 sm:gap-7">
-      <FishMark size={62} className="shrink-0" />
+    <header className="flex items-center gap-4 sm:gap-6">
+      <FishMark className="h-[76px] w-[76px] shrink-0 sm:h-[108px] sm:w-[108px]" />
       <div>
         <h1>
           <Wordmark className="t-blog-title text-ink" />
