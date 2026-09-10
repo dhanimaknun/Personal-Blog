@@ -39,6 +39,45 @@ model Post {
   @@index([updatedAt])
 }
 
+// ── After Hours — a private media & mood tracker ──────────────
+
+enum MediaType {
+  BOOK
+  MOVIE
+  SERIES
+  MANGA
+  MUSIC
+}
+
+enum MediaStatus {
+  PLANNED
+  ONGOING
+  COMPLETED
+  DROPPED
+}
+
+model MediaEntry {
+  id         String      @id @default(cuid())
+  type       MediaType
+  title      String
+  creator    String      @default("") // author / director / artist / studio
+  cover      String      @default("") // image URL
+  rating     Float        @default(0) // 0 – 5, half steps
+  genres     String[]     @default([])
+  moods      String[]     @default([])
+  status     MediaStatus  @default(PLANNED)
+  notes      String       @default("")
+  favorite   Boolean      @default(false)
+  consumedAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([type, status])
+  @@index([favorite])
+  @@index([updatedAt])
+}
+
 // A lightweight snapshot taken on autosave / publish, powering version history.
 model PostVersion {
   id      String @id @default(cuid())
