@@ -35,16 +35,6 @@ export default async function AfterHoursPage() {
       <div className="mx-auto max-w-[1180px]">
         <div className="mb-14">
           <Masthead compact />
-          <div className="mt-16">
-            <p className="t-eyebrow">After Hours</p>
-            <h1 className="t-post-title mt-4 max-w-[16ch] text-ink">
-              Everything I’ve been into lately.
-            </h1>
-            <p className="t-excerpt mt-4 max-w-[42ch]">
-              A running log of what I read, watch, and keep on loop — with the
-              mood it left behind.
-            </p>
-          </div>
         </div>
 
         <AfterHours initialEntries={entries} canEdit={Boolean(session)} />
