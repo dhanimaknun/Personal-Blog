@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import { Plus, Search, Star } from "lucide-react";
 import { api } from "@/lib/client";
 import {
@@ -26,6 +27,7 @@ export function AfterHours({
   initialEntries: MediaEntry[];
   canEdit: boolean;
 }) {
+  const router = useRouter();
   const [entries, setEntries] = useState(initialEntries);
   const [type, setType] = useState<TypeFilter>("ALL");
   const [status, setStatus] = useState<StatusFilter>("ALL");
@@ -34,6 +36,9 @@ export function AfterHours({
 
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<MediaEntry | null>(null);
+
+  // Adopt fresh server data after a router.refresh().
+  useEffect(() => setEntries(initialEntries), [initialEntries]);
 
   const stats = useMemo(() => computeStats(entries), [entries]);
 
@@ -61,14 +66,17 @@ export function AfterHours({
   async function handleCreate(data: Partial<MediaEntry>) {
     const created = await api<MediaEntry>("/api/media", { method: "POST", json: data });
     upsert(created);
+    router.refresh();
   }
   async function handleUpdate(id: string, data: Partial<MediaEntry>) {
     const updated = await api<MediaEntry>(`/api/media/${id}`, { method: "PATCH", json: data });
     upsert(updated);
+    router.refresh();
   }
   async function handleDelete(id: string) {
     await api(`/api/media/${id}`, { method: "DELETE" });
     setEntries((prev) => prev.filter((e) => e.id !== id));
+    router.refresh();
   }
   async function toggleFavorite(entry: MediaEntry) {
     upsert({ ...entry, favorite: !entry.favorite });
@@ -77,6 +85,7 @@ export function AfterHours({
         method: "PATCH",
         json: { favorite: !entry.favorite },
       });
+      router.refresh();
     } catch {
       upsert(entry); // revert
     }
