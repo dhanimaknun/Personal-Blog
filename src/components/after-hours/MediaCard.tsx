@@ -11,12 +11,12 @@ import {
 export function MediaCard({
   entry,
   canEdit,
-  onEdit,
+  onOpen,
   onToggleFavorite,
 }: {
   entry: MediaEntry;
   canEdit: boolean;
-  onEdit: () => void;
+  onOpen: () => void;
   onToggleFavorite: () => void;
 }) {
   const [broken, setBroken] = useState(false);
@@ -26,11 +26,7 @@ export function MediaCard({
   return (
     <article className="group">
       <div className="relative">
-        <button
-          type="button"
-          onClick={() => canEdit && onEdit()}
-          className={`block w-full ${canEdit ? "" : "cursor-default"}`}
-        >
+        <button type="button" onClick={onOpen} className="block w-full">
           <div className="relative aspect-[2/3] overflow-hidden rounded-lg border border-divider bg-surface">
             {showCover ? (
               // eslint-disable-next-line @next/next/no-img-element
@@ -79,11 +75,7 @@ export function MediaCard({
         )}
       </div>
 
-      <button
-        type="button"
-        onClick={() => canEdit && onEdit()}
-        className={`mt-3 block w-full text-left ${canEdit ? "" : "cursor-default"}`}
-      >
+      <button type="button" onClick={onOpen} className="mt-3 block w-full text-left">
         <h3 className="font-display text-[15px] font-semibold leading-snug tracking-[-0.01em] text-ink transition-colors group-hover:text-accent">
           {entry.title}
         </h3>

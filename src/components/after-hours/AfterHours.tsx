@@ -16,6 +16,7 @@ import {
 import { MediaCard } from "@/components/after-hours/MediaCard";
 import { OnLoopCard } from "@/components/after-hours/OnLoopCard";
 import { EntryModal } from "@/components/after-hours/EntryModal";
+import { DetailModal } from "@/components/after-hours/DetailModal";
 
 const GRID_TYPES: MediaType[] = ["BOOK", "MOVIE", "SERIES", "MANGA"];
 type TypeFilter = "ALL" | MediaType;
@@ -47,6 +48,7 @@ export function AfterHours({
 
   const [adding, setAdding] = useState(false);
   const [editing, setEditing] = useState<MediaEntry | null>(null);
+  const [viewing, setViewing] = useState<MediaEntry | null>(null);
 
   useEffect(() => setEntries(initialEntries), [initialEntries]);
   useEffect(() => setHour(new Date().getHours()), []);
@@ -151,8 +153,7 @@ export function AfterHours({
                     key={entry.id}
                     entry={entry}
                     nowPlaying={i === 0}
-                    canEdit={canEdit}
-                    onEdit={() => setEditing(entry)}
+                    onOpen={() => setViewing(entry)}
                   />
                 ))}
               </div>
@@ -221,7 +222,7 @@ export function AfterHours({
                     key={entry.id}
                     entry={entry}
                     canEdit={canEdit}
-                    onEdit={() => setEditing(entry)}
+                    onOpen={() => setViewing(entry)}
                     onToggleFavorite={() => toggleFavorite(entry)}
                   />
                 ))}
@@ -242,6 +243,18 @@ export function AfterHours({
             Add an entry
           </button>
         </div>
+      ) : null}
+
+      {viewing ? (
+        <DetailModal
+          entry={viewing}
+          canEdit={canEdit}
+          onClose={() => setViewing(null)}
+          onEdit={() => {
+            setEditing(viewing);
+            setViewing(null);
+          }}
+        />
       ) : null}
 
       {adding ? (

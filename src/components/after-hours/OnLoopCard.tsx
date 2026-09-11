@@ -7,22 +7,18 @@ import type { MediaEntry } from "@/lib/media-shared";
 export function OnLoopCard({
   entry,
   nowPlaying,
-  canEdit,
-  onEdit,
+  onOpen,
 }: {
   entry: MediaEntry;
   nowPlaying?: boolean;
-  canEdit: boolean;
-  onEdit: () => void;
+  onOpen: () => void;
 }) {
   const [broken, setBroken] = useState(false);
   return (
     <button
       type="button"
-      onClick={() => canEdit && onEdit()}
-      className={`flex w-full items-start gap-3 rounded-lg border border-divider bg-surface p-3 text-left transition-colors ${
-        canEdit ? "hover:border-secondary/40" : "cursor-default"
-      }`}
+      onClick={onOpen}
+      className="flex w-full items-start gap-3 rounded-lg border border-divider bg-surface p-3 text-left transition-colors hover:border-secondary/40"
     >
       <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-md border border-divider bg-canvas">
         {entry.cover && !broken ? (
