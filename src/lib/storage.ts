@@ -28,17 +28,10 @@ export function uploadsConfigured(): boolean {
 const ALLOWED = new Set(["image/jpeg", "image/png", "image/webp", "image/gif", "image/avif"]);
 const MAX_BYTES = 8 * 1024 * 1024;
 
-export async function uploadImage(file: File): Promise<{ url: string }> {
+async function putObject(path: string, contentType: string, body: Buffer): Promise<string> {
   const base = supabaseUrl();
   const key = secretKey();
   if (!base || !key) throw new UploadError("Image upload is not configured.", 501);
-
-  if (!ALLOWED.has(file.type)) throw new UploadError("Unsupported image type.", 415);
-  if (file.size > MAX_BYTES) throw new UploadError("Image is larger than 8 MB.", 413);
-
-  const ext = (file.name.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "");
-  const name = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-  const path = `${new Date().getUTCFullYear()}/${name}`;
 
   const res = await fetch(`${base}/storage/v1/object/${BUCKET}/${path}`, {
     method: "POST",
@@ -46,11 +39,11 @@ export async function uploadImage(file: File): Promise<{ url: string }> {
       // works for both legacy service_role JWTs and the new sb_secret_… keys
       apikey: key,
       Authorization: `Bearer ${key}`,
-      "Content-Type": file.type,
+      "Content-Type": contentType,
       "x-upsert": "false",
       "cache-control": "public, max-age=31536000, immutable",
     },
-    body: Buffer.from(await file.arrayBuffer()),
+    body: new Uint8Array(body),
   });
 
   if (!res.ok) {
@@ -61,7 +54,33 @@ export async function uploadImage(file: File): Promise<{ url: string }> {
     );
   }
 
-  return { url: `${base}/storage/v1/object/public/${BUCKET}/${path}` };
+  return `${base}/storage/v1/object/public/${BUCKET}/${path}`;
+}
+
+export async function uploadImage(file: File): Promise<{ url: string }> {
+  if (!ALLOWED.has(file.type)) throw new UploadError("Unsupported image type.", 415);
+  if (file.size > MAX_BYTES) throw new UploadError("Image is larger than 8 MB.", 413);
+
+  const ext = (file.name.split(".").pop() || "bin").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const name = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const path = `${new Date().getUTCFullYear()}/${name}`;
+  const url = await putObject(path, file.type, Buffer.from(await file.arrayBuffer()));
+  return { url };
+}
+
+/** Same as uploadImage, for raw bytes (e.g. a file downloaded from Telegram). */
+export async function uploadImageBuffer(
+  buffer: Buffer,
+  contentType: string,
+): Promise<{ url: string }> {
+  if (!ALLOWED.has(contentType)) throw new UploadError("Unsupported image type.", 415);
+  if (buffer.length > MAX_BYTES) throw new UploadError("Image is larger than 8 MB.", 413);
+
+  const ext = contentType.split("/")[1]?.replace(/[^a-z0-9]/g, "") || "jpg";
+  const name = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+  const path = `${new Date().getUTCFullYear()}/${name}`;
+  const url = await putObject(path, contentType, buffer);
+  return { url };
 }
 
 export class UploadError extends Error {

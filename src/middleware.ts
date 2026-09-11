@@ -3,8 +3,15 @@ import { COOKIE_NAME, verifySession } from "@/lib/session";
 
 const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
-// Public passthroughs even under a protected prefix.
-const PUBLIC_PATHS = new Set(["/admin/login", "/api/auth/login", "/api/auth/logout"]);
+// Public passthroughs even under a protected prefix. The Telegram webhook
+// carries its own auth (a secret header + an owner-id check) since the
+// request comes from Telegram's servers, not a logged-in browser.
+const PUBLIC_PATHS = new Set([
+  "/admin/login",
+  "/api/auth/login",
+  "/api/auth/logout",
+  "/api/telegram/webhook",
+]);
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
