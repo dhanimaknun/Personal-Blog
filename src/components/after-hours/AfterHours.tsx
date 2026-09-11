@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { Plus, Search, Star } from "lucide-react";
 import { api } from "@/lib/client";
 import {
-  computeStats,
   TYPE_LABEL,
   STATUS_LABEL,
   MEDIA_STATUSES,
@@ -19,6 +18,13 @@ import { EntryModal } from "@/components/after-hours/EntryModal";
 import { DetailModal } from "@/components/after-hours/DetailModal";
 
 const GRID_TYPES: MediaType[] = ["BOOK", "MOVIE", "SERIES", "MANGA"];
+const PLURAL_LABEL: Record<MediaType, string> = {
+  BOOK: "Books",
+  MOVIE: "Movies",
+  SERIES: "Series",
+  MANGA: "Manga",
+  MUSIC: "Music",
+};
 type TypeFilter = "ALL" | MediaType;
 type StatusFilter = "ALL" | MediaStatus;
 
@@ -53,7 +59,14 @@ export function AfterHours({
   useEffect(() => setEntries(initialEntries), [initialEntries]);
   useEffect(() => setHour(new Date().getHours()), []);
 
-  const stats = useMemo(() => computeStats(entries), [entries]);
+  const typeCounts = useMemo(
+    () =>
+      GRID_TYPES.map((t) => ({
+        type: t,
+        count: entries.filter((e) => e.type === t).length,
+      })),
+    [entries],
+  );
   const onLoop = useMemo(
     () =>
       entries
@@ -137,10 +150,9 @@ export function AfterHours({
         <>
           {/* stats */}
           <div className="mt-14 grid grid-cols-2 gap-3 sm:grid-cols-4">
-            <Stat label="Logged" value={stats.total} />
-            <Stat label="Completed" value={stats.completed} />
-            <Stat label="Favorites" value={stats.favorites} />
-            <Stat label="Avg rating" value={stats.avgRating ? stats.avgRating.toFixed(1) : "—"} />
+            {typeCounts.map(({ type: t, count }) => (
+              <Stat key={t} label={PLURAL_LABEL[t]} value={count} />
+            ))}
           </div>
 
           {/* on loop */}
