@@ -109,6 +109,80 @@ notes: komorebi
 
 Attach a photo with this as the caption to set the cover.`;
 
+// ── Blog post format ────────────────────────────────────────
+//
+//   post: On slow mornings
+//   tags: life, writing
+//   publish: yes
+//
+//   Some mornings don't ask anything of you.
+//
+//   They just sit there, quiet, waiting for coffee.
+//
+// First line required: "post: <title>". "tags:" and "publish:" are
+// optional header lines right after it. Everything from the next blank
+// line on is the Markdown body. Omit "publish:" to save as a draft.
+
+export const TELEGRAM_POST_HELP = `To write a journal entry:
+
+post: Your Title
+tags: comma, separated (optional)
+publish: yes (optional — leave out to save as a draft)
+
+...then a blank line, then the body in Markdown.
+
+Commands:
+/drafts — list your recent drafts
+/publish <id> — publish a draft by its short id (shown by /drafts)
+/help — show this message
+
+Attach a photo with "post: ..." as the caption to drop it into the post.`;
+
+export type PostParseResult =
+  | { title: string; tags: string[]; publish: boolean; body: string }
+  | { error: string };
+
+export function parseTelegramPost(text: string): PostParseResult {
+  const lines = text.replace(/\r/g, "").split("\n");
+
+  let i = 0;
+  while (i < lines.length && lines[i].trim() === "") i++;
+
+  const head = lines[i]?.match(FIELD_LINE);
+  if (!head || head[1].trim().toLowerCase() !== "post" || !head[2].trim()) {
+    return { error: `First line has to be "post: Your Title".\n\n${TELEGRAM_POST_HELP}` };
+  }
+  const title = head[2].trim();
+  i++;
+
+  let tags: string[] = [];
+  let publish = false;
+
+  while (i < lines.length) {
+    const line = lines[i];
+    if (line.trim() === "") {
+      i++;
+      break;
+    }
+    const m = line.match(FIELD_LINE);
+    if (!m) break;
+    const key = m[1].trim().toLowerCase();
+    const value = m[2].trim();
+    if (key === "tags") {
+      tags = value.split(",").map((s) => s.trim()).filter(Boolean);
+      i++;
+    } else if (key === "publish") {
+      publish = /^(y|yes|true|1)/i.test(value);
+      i++;
+    } else {
+      break; // not a recognised header — treat as the start of the body
+    }
+  }
+
+  const body = lines.slice(i).join("\n").trim();
+  return { title, tags, publish, body };
+}
+
 export type ParseResult = { data: MediaInputShape } | { error: string };
 
 const FIELD_LINE = /^([a-zA-Z ]+):\s*(.*)$/;
@@ -128,7 +202,7 @@ export function parseTelegramEntry(text: string): ParseResult {
 
   if (!type || !title) {
     return {
-      error: `I couldn't read that. The first line has to be "<type>: <title>", e.g. "movie: Perfect Days".\n\n${TELEGRAM_HELP}`,
+      error: `I couldn't read that as either a media entry or a post.\n\n${TELEGRAM_FULL_HELP}`,
     };
   }
 
@@ -190,3 +264,11 @@ export function parseTelegramEntry(text: string): ParseResult {
 
   return { data };
 }
+
+export const TELEGRAM_FULL_HELP = `I can do two things:
+
+— After Hours (books/movies/series/manga/music):
+${TELEGRAM_HELP}
+
+— The journal:
+${TELEGRAM_POST_HELP}`;
