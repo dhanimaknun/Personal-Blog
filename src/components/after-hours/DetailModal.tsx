@@ -41,7 +41,7 @@ export function DetailModal({
       >
         {/* cover */}
         <div className="relative">
-          <div className="relative aspect-[2/3] overflow-hidden rounded-lg border border-divider bg-canvas">
+          <div className="pop-tile relative aspect-[2/3] overflow-hidden rounded-lg border border-divider bg-canvas">
             {showCover ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img

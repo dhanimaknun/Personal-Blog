@@ -18,7 +18,7 @@ export function OnLoopCard({
     <button
       type="button"
       onClick={onOpen}
-      className="flex w-full items-start gap-3 rounded-lg border border-divider bg-surface p-3 text-left transition-colors hover:border-secondary/40"
+      className="pop-card flex w-full items-start gap-3 rounded-lg border border-divider bg-surface p-3 text-left transition-colors hover:border-secondary/40"
     >
       <div className="grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-md border border-divider bg-canvas">
         {entry.cover && !broken ? (

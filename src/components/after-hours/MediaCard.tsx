@@ -27,7 +27,7 @@ export function MediaCard({
     <article className="group">
       <div className="relative">
         <button type="button" onClick={onOpen} className="block w-full">
-          <div className="relative aspect-[2/3] overflow-hidden rounded-lg border border-divider bg-surface">
+          <div className="pop-card relative aspect-[2/3] overflow-hidden rounded-lg border border-divider bg-surface">
             {showCover ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img

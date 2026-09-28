@@ -303,7 +303,7 @@ function SectionHead({ children }: { children: React.ReactNode }) {
 
 function Stat({ label, value }: { label: string; value: string | number }) {
   return (
-    <div className="rounded-lg border border-divider bg-surface p-4">
+    <div className="pop-tile rounded-lg border border-divider bg-surface p-4">
       <p className="font-display text-[28px] font-light tabular-nums leading-none tracking-[-0.02em] text-ink">
         {value}
       </p>
