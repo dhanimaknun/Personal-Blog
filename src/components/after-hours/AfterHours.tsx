@@ -157,7 +157,7 @@ export function AfterHours({
 
           {/* on loop */}
           {onLoop.length > 0 ? (
-            <section className="mt-16">
+            <section className="mt-8">
               <SectionHead>On Loop</SectionHead>
               <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 {onLoop.map((entry, i) => (
