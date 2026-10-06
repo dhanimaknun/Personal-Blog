@@ -94,3 +94,46 @@ model PostVersion {
 
   @@index([postId, createdAt])
 }
+
+// ── Finance Deck — a private Gold + money-market fund tracker ──
+
+enum InvestmentAsset {
+  GOLD
+  RDPU
+}
+
+// One purchase. Gold: quantity in grams, price per gram. RDPU: quantity in
+// units, price = NAB per unit. `amount` is what was actually paid (fees in).
+model Investment {
+  id       String          @id @default(cuid())
+  asset    InvestmentAsset
+  fundId   Int? // Pasardana fund id (RDPU) — drives the automatic NAB lookup
+  fundName String          @default("")
+  platform String          @default("") // where it was bought: Pegadaian, Bibit…
+  quantity Float
+  price    Float
+  amount   Float
+  date     DateTime        @db.Date
+  notes    String          @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([asset, date])
+}
+
+// One closing price per instrument per day. `key` is "GOLD" (IDR per gram)
+// or "RDPU:<fundId>" / "RDPU:name:<fund name>" (NAB per unit). Daily rows
+// accumulate into the price history the analytics are drawn from.
+model MarketPrice {
+  id     String   @id @default(cuid())
+  key    String
+  date   DateTime @db.Date
+  price  Float
+  source String   @default("auto") // "auto" | "manual" — manual is never overwritten
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([key, date])
+}

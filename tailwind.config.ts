@@ -12,6 +12,8 @@ const config: Config = {
         divider: "#E4E2DC",
         hover: "#111111",
         accent: "#C8461E", // terracotta
+        gain: "#2E7D4F", // Finance Deck — profit
+        loss: "#B42318", // Finance Deck — loss
       },
       fontFamily: {
         sans: ["var(--font-sans)"],
