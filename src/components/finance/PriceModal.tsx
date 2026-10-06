@@ -4,7 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
 import { formatPrice } from "@/lib/finance-shared";
-import type { Instrument } from "@/components/finance/AssetSection";
+import type { Instrument } from "@/components/finance/Holdings";
 
 /**
  * Override today's market price for one instrument — e.g. value gold at the
@@ -45,7 +45,7 @@ export function PriceModal({
   }
 
   const field =
-    "w-full rounded-lg border border-divider bg-canvas px-3 py-2 text-[14px] text-ink placeholder:text-secondary focus:border-accent focus:outline-none";
+    "w-full rounded-xl border border-divider bg-canvas px-3.5 py-2.5 text-[14px] text-ink placeholder:text-secondary focus:border-accent focus:outline-none";
 
   return (
     <div
@@ -61,7 +61,7 @@ export function PriceModal({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.18, ease: [0, 0, 0.2, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[420px] rounded-lg border border-divider bg-surface p-6 sm:p-8"
+        className="w-full max-w-[420px] rounded-2xl bg-surface p-6 shadow-[0_24px_64px_-12px_rgba(28,28,30,0.25)] ring-1 ring-divider/60 sm:p-8"
       >
         <div className="flex items-center justify-between">
           <h2 id="price-modal-title" className="font-display text-[20px] font-semibold tracking-tight text-ink">
@@ -73,7 +73,7 @@ export function PriceModal({
         </div>
         <p className="mt-2 text-[13px] leading-relaxed text-secondary">
           {isGold
-            ? "The automatic price is international spot, converted to rupiah. Enter a dealer’s buyback price here to value your gold at what it would actually sell for."
+            ? "Your gold is valued at Antam’s buyback price — what you’d get selling it back today. Enter another price (Pegadaian’s, say) to value it at that instead."
             : instrument.label}
           {q ? ` Latest: ${formatPrice(q.price)}${q.source === "manual" ? " (manual)" : ""}.` : ""}
         </p>
@@ -111,7 +111,7 @@ export function PriceModal({
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-ink px-4 py-2 text-[14px] font-medium text-canvas transition-opacity hover:opacity-90 disabled:opacity-50"
+              className="rounded-full bg-ink px-5 py-2.5 text-[14px] font-medium text-canvas transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {saving ? "Saving…" : "Save price"}
             </button>

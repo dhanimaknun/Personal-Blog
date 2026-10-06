@@ -378,10 +378,18 @@ export type Outcome = "ALL" | "GAIN" | "LOSS";
 
 export function filterAndSort(
   positions: Position[],
-  opts: { query: string; outcome: Outcome; fund: string; sort: SortKey; dir: "asc" | "desc" },
+  opts: {
+    query: string;
+    outcome: Outcome;
+    fund: string;
+    asset?: "ALL" | Asset;
+    sort: SortKey;
+    dir: "asc" | "desc";
+  },
 ): Position[] {
   const q = opts.query.trim().toLowerCase();
   const list = positions.filter((p) => {
+    if (opts.asset && opts.asset !== "ALL" && p.asset !== opts.asset) return false;
     if (opts.fund !== "ALL" && p.key !== opts.fund) return false;
     if (opts.outcome === "GAIN" && p.pl < 0) return false;
     if (opts.outcome === "LOSS" && p.pl >= 0) return false;

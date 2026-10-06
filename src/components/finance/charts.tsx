@@ -4,8 +4,8 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { GAIN_COLOR, LOSS_COLOR } from "@/lib/finance-shared";
 
 // Small, dependency-free SVG charts in the journal's quiet register:
-// 2px lines, hairline solid grid, ≤24px bars with 4px rounded data-ends,
-// a crosshair tooltip on lines and a per-bar tooltip on columns.
+// 2px lines, a hairline solid grid, soft area washes,
+// and a crosshair tooltip that reads every series at the hovered date.
 
 const GRID = "#ECEAE4";
 const AXIS_TEXT = "#6E6E73";
@@ -58,6 +58,7 @@ export function LineChart({
   format,
   formatTick,
   formatDate,
+  formatAxisDate = formatDate,
   height = 220,
   signed = false,
   label,
@@ -67,6 +68,8 @@ export function LineChart({
   format: (v: number) => string;
   formatTick: (v: number) => string;
   formatDate: (d: string) => string;
+  /** Shorter date for the x-axis; the tooltip uses `formatDate`. */
+  formatAxisDate?: (d: string) => string;
   height?: number;
   /** Profit/loss mode: zero baseline, green wash above and red below. */
   signed?: boolean;
@@ -143,7 +146,7 @@ export function LineChart({
             fontSize={11}
             fill={AXIS_TEXT}
           >
-            {formatDate(dates[i])}
+            {formatAxisDate(dates[i])}
           </text>
         ))}
 
@@ -216,124 +219,15 @@ export function LineChart({
   );
 }
 
-export function ColumnChart({
-  labels,
-  values,
-  format,
-  formatTick,
-  formatLabel,
-  detail,
-  height = 220,
-  label,
-}: {
-  labels: string[];
-  values: number[];
-  format: (v: number) => string;
-  formatTick: (v: number) => string;
-  formatLabel: (l: string) => string;
-  /** Optional second line in the tooltip. */
-  detail?: (i: number) => string;
-  height?: number;
-  label: string;
-}) {
-  const [ref, width] = useWidth<HTMLDivElement>();
-  const [hover, setHover] = useState<number | null>(null);
-  const n = labels.length;
-
-  if (n === 0 || width === 0) return <div ref={ref} style={{ height }} />;
-
-  const { lo, hi, ticks } = niceTicks(Math.min(0, ...values), Math.max(0, ...values));
-  const w = width - PAD.left - PAD.right;
-  const h = height - PAD.top - PAD.bottom;
-  const y = (v: number) => PAD.top + h - ((v - lo) / (hi - lo || 1)) * h;
-  const band = w / n;
-  const barW = Math.max(2, Math.min(24, band - 2));
-  const cx = (i: number) => PAD.left + band * i + band / 2;
-  const zero = y(0);
-  const every = Math.max(1, Math.ceil(n / Math.max(1, Math.floor(w / 56))));
-
-  /** Column with a 4px rounded data-end and a square foot on the baseline. */
-  const bar = (i: number, v: number) => {
-    const x0 = cx(i) - barW / 2;
-    const top = y(v);
-    const len = Math.abs(top - zero);
-    const r = Math.min(4, barW / 2, len);
-    if (len < 0.5) return "";
-    if (v >= 0)
-      return `M${x0},${zero}V${top + r}Q${x0},${top} ${x0 + r},${top}H${x0 + barW - r}Q${x0 + barW},${top} ${x0 + barW},${top + r}V${zero}Z`;
-    return `M${x0},${zero}V${top - r}Q${x0},${top} ${x0 + r},${top}H${x0 + barW - r}Q${x0 + barW},${top} ${x0 + barW},${top - r}V${zero}Z`;
-  };
-
-  const tipLeft = hover !== null ? cx(hover) : 0;
-  const tipOnRight = tipLeft < width / 2;
-
-  return (
-    <div ref={ref} className="relative" style={{ height }}>
-      <svg
-        width={width}
-        height={height}
-        role="img"
-        aria-label={label}
-        tabIndex={0}
-        className="block focus-visible:outline-none"
-        onPointerLeave={() => setHover(null)}
-        onFocus={() => setHover((h) => h ?? n - 1)}
-        onBlur={() => setHover(null)}
-        onKeyDown={(e) => {
-          if (e.key === "ArrowLeft") setHover((h) => Math.max(0, (h ?? n - 1) - 1));
-          if (e.key === "ArrowRight") setHover((h) => Math.min(n - 1, (h ?? 0) + 1));
-        }}
-      >
-        {ticks.map((t) => (
-          <g key={t}>
-            <line x1={PAD.left} x2={width - PAD.right} y1={y(t)} y2={y(t)} stroke={t === 0 ? "#CFCCC3" : GRID} strokeWidth={1} />
-            <text x={PAD.left - 10} y={y(t)} dy="0.32em" textAnchor="end" fontSize={11} fill={AXIS_TEXT} className="tabular-nums">
-              {formatTick(t)}
-            </text>
-          </g>
-        ))}
-        {labels.map((l, i) =>
-          i % every === 0 || i === n - 1 ? (
-            <text key={l} x={cx(i)} y={height - 6} textAnchor="middle" fontSize={11} fill={AXIS_TEXT}>
-              {formatLabel(l)}
-            </text>
-          ) : null,
-        )}
-        {values.map((v, i) => (
-          <g key={labels[i]} onPointerEnter={() => setHover(i)}>
-            {/* hit target: the whole band, not just the painted bar */}
-            <rect x={PAD.left + band * i} y={PAD.top} width={band} height={h} fill="transparent" />
-            <path
-              d={bar(i, v)}
-              fill={v >= 0 ? GAIN_COLOR : LOSS_COLOR}
-              opacity={hover === null || hover === i ? 1 : 0.45}
-              className="transition-opacity"
-            />
-          </g>
-        ))}
-      </svg>
-
-      {hover !== null ? (
-        <div
-          className="pointer-events-none absolute top-2 z-10 min-w-[150px] rounded-md border border-divider bg-surface px-3 py-2 shadow-sm"
-          style={tipOnRight ? { left: tipLeft + 16 } : { right: width - tipLeft + 16 }}
-        >
-          <p className="t-label text-secondary">{formatLabel(labels[hover])}</p>
-          <p className="mt-1 text-[13px] font-semibold tabular-nums text-ink">{format(values[hover])}</p>
-          {detail ? <p className="text-[12px] text-secondary">{detail(hover)}</p> : null}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 /** Part-to-whole as one 100% bar — clearer than a two-slice donut. */
 export function AllocationBar({
   parts,
   height = 12,
+  showLegend = true,
 }: {
   parts: { id: string; label: string; color: string; share: number; detail?: string }[];
   height?: number;
+  showLegend?: boolean;
 }) {
   const visible = parts.filter((p) => p.share > 0);
   return (
@@ -352,6 +246,7 @@ export function AllocationBar({
           ))
         )}
       </div>
+      {showLegend ? (
       <ul className="mt-3 flex flex-wrap gap-x-5 gap-y-1.5">
         {parts.map((p) => (
           <li key={p.id} className="flex items-center gap-2 text-[13px]">
@@ -362,6 +257,7 @@ export function AllocationBar({
           </li>
         ))}
       </ul>
+      ) : null}
     </div>
   );
 }

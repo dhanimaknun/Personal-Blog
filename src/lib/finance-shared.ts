@@ -18,7 +18,7 @@ export const GAIN_COLOR = "#2E7D4F";
 export const LOSS_COLOR = "#B42318";
 
 export const PLATFORM_SUGGESTIONS: Record<Asset, string[]> = {
-  GOLD: ["Antam", "Pegadaian", "Pluang", "Tring", "Treasury", "Bank Syariah Indonesia"],
+  GOLD: ["Antam", "Pegadaian", "Galeri 24", "UBS", "Hartadinata", "Pluang", "Tring", "Treasury", "Bank Syariah Indonesia"],
   RDPU: ["Bibit", "Bareksa", "Ajaib", "Pluang", "Makmur", "Tanamduit"],
 };
 
@@ -38,7 +38,12 @@ export type Investment = {
   updatedAt: string;
 };
 
-export type PriceSource = "auto" | "manual";
+/**
+ * Where a price came from. "antam" = Antam's official buyback (or, for the
+ * retail key, buying) price; "spot" = international spot, the fallback when
+ * Antam's price can't be fetched; "auto" = a fund's NAB; "manual" = set by hand.
+ */
+export type PriceSource = "antam" | "spot" | "auto" | "manual";
 
 /** One day's closing price for an instrument. `date` is yyyy-mm-dd. */
 export type PricePoint = {
@@ -66,6 +71,8 @@ export type RefreshResult = {
 };
 
 export const GOLD_KEY = "GOLD";
+/** Antam's per-gram price for buying a 1 g bar — prefills new purchases. */
+export const GOLD_RETAIL_KEY = "GOLD:retail";
 
 /** The MarketPrice key an investment is valued against. */
 export function priceKey(inv: Pick<Investment, "asset" | "fundId" | "fundName">): string {

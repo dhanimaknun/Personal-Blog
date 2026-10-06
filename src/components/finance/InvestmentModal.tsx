@@ -46,7 +46,7 @@ export function InvestmentModal({
   asset: Asset;
   entry?: Investment;
   today: string;
-  /** Today's gold price per gram, to prefill a new purchase. */
+  /** Antam's buying price per gram today, to prefill a new purchase. */
   goldPrice: number | null;
   onClose: () => void;
   onSubmit: (data: InvestmentDraft) => Promise<void>;
@@ -95,6 +95,23 @@ export function InvestmentModal({
     setManual({ amount: false, quantity: false });
   }
 
+  /**
+   * Today's gold price is only a sensible default for a purchase made today.
+   * Moving a new purchase to another day clears an untouched prefill (and
+   * moving it back restores it), so a back-dated buy isn't silently saved
+   * at today's price.
+   */
+  function changeDate(date: string) {
+    setD((p) => {
+      if (entry || !isGold || !goldPrice) return { ...p, date };
+      const prefill = str(Math.round(goldPrice));
+      if (date !== today && p.price === prefill) return { ...p, date, price: "", amount: "" };
+      if (date === today && !p.price) return { ...p, date, price: prefill };
+      return { ...p, date };
+    });
+    if (isGold && !entry) setManual((m) => ({ ...m, amount: false }));
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     const quantity = num(d.quantity);
@@ -127,7 +144,7 @@ export function InvestmentModal({
   }
 
   const field =
-    "w-full rounded-lg border border-divider bg-canvas px-3 py-2 text-[14px] text-ink placeholder:text-secondary focus:border-accent focus:outline-none";
+    "w-full rounded-xl border border-divider bg-canvas px-3.5 py-2.5 text-[14px] text-ink placeholder:text-secondary focus:border-accent focus:outline-none";
 
   return (
     <div
@@ -143,7 +160,7 @@ export function InvestmentModal({
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.18, ease: [0, 0, 0.2, 1] }}
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-[520px] rounded-lg border border-divider bg-surface p-6 sm:p-8"
+        className="w-full max-w-[520px] rounded-2xl bg-surface p-6 shadow-[0_24px_64px_-12px_rgba(28,28,30,0.25)] ring-1 ring-divider/60 sm:p-8"
       >
         <div className="flex items-center justify-between">
           <h2 id="investment-modal-title" className="font-display text-[20px] font-semibold tracking-tight text-ink">
@@ -195,7 +212,7 @@ export function InvestmentModal({
 
           <div className="grid grid-cols-2 gap-3">
             <Group label="Date">
-              <input type="date" max={today} value={d.date} onChange={(e) => set("date", e.target.value)} className={field} />
+              <input type="date" max={today} value={d.date} onChange={(e) => changeDate(e.target.value)} className={field} />
             </Group>
             <Group label="Platform">
               <input
@@ -218,7 +235,7 @@ export function InvestmentModal({
               <Group label="Weight (grams)">
                 <NumberInput value={d.quantity} onChange={(v) => set("quantity", v)} placeholder="1" className={field} autoFocus />
               </Group>
-              <Group label="Price per gram (Rp)">
+              <Group label="Price per gram (Rp)" hint={d.date !== today && !entry ? "What you paid that day" : undefined}>
                 <NumberInput value={d.price} onChange={(v) => set("price", v)} placeholder="0" className={field} />
               </Group>
             </div>
@@ -277,7 +294,7 @@ export function InvestmentModal({
             <button
               type="submit"
               disabled={saving}
-              className="rounded-lg bg-ink px-4 py-2 text-[14px] font-medium text-canvas transition-opacity hover:opacity-90 disabled:opacity-50"
+              className="rounded-full bg-ink px-5 py-2.5 text-[14px] font-medium text-canvas transition-opacity hover:opacity-90 disabled:opacity-50"
             >
               {saving ? "Saving…" : entry ? "Save changes" : "Add"}
             </button>
@@ -404,7 +421,7 @@ function FundPicker({
       </p>
 
       {open && (results.length > 0 || error) ? (
-        <ul className="thin-scroll absolute z-10 mt-1 max-h-64 w-full overflow-y-auto rounded-lg border border-divider bg-surface py-1 shadow-sm">
+        <ul className="thin-scroll absolute z-10 mt-1 max-h-64 w-full overflow-y-auto rounded-xl border border-divider bg-surface py-1 shadow-lg">
           {error ? <li className="px-3 py-2 text-[13px] text-loss">{error}</li> : null}
           {results.map((f) => (
             <li key={f.id}>
