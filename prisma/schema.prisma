@@ -137,3 +137,75 @@ model MarketPrice {
 
   @@unique([key, date])
 }
+
+// ── Google Apps — agenda + subscription checklist, pushed by Apps Script ──
+
+// A calendar event in the synced window (today → a couple of weeks out).
+// Each sync replaces the whole window, so deleted events disappear.
+model CalendarEvent {
+  id         String   @id // Google's event id (unique per recurring instance)
+  calendar   String   @default("")
+  color      String   @default("")
+  title      String   @default("")
+  location   String   @default("")
+  allDay     Boolean  @default(false)
+  start      DateTime // all-day events: that date at 00:00 UTC
+  end        DateTime
+  syncedAt   DateTime @default(now())
+
+  @@index([start])
+}
+
+enum BillingCycle {
+  MONTHLY
+  YEARLY
+}
+
+model Subscription {
+  id           String       @id @default(cuid())
+  name         String
+  amount       Float        @default(0)
+  cycle        BillingCycle @default(MONTHLY)
+  dueDay       Int          @default(1) // 1–31, clamped to the month's length
+  dueMonth     Int          @default(1) // 1–12, yearly only
+  matchFrom    String       @default("") // Gmail sender to look for, e.g. "netflix.com"
+  matchKeyword String       @default("") // optional extra word in the receipt
+  active       Boolean      @default(true)
+  notes        String       @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payments SubscriptionPayment[]
+}
+
+enum PaymentStatus {
+  PAID
+  UNPAID // an explicit "not paid" — stops a later Gmail match re-ticking it
+}
+
+// One row per subscription per billing period ("2026-10" monthly, "2026" yearly).
+model SubscriptionPayment {
+  id             String        @id @default(cuid())
+  subscriptionId String
+  subscription   Subscription  @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+  period         String
+  status         PaymentStatus @default(PAID)
+  source         String        @default("manual") // "gmail" | "manual"
+  paidAt         DateTime?
+  emailFrom      String        @default("")
+  emailSubject   String        @default("")
+  messageId      String        @default("")
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([subscriptionId, period])
+}
+
+// Small key → JSON store for integration bookkeeping (e.g. last Google sync).
+model IntegrationState {
+  id        String   @id
+  data      Json
+  updatedAt DateTime @updatedAt
+}

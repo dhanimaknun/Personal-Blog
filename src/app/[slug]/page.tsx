@@ -141,7 +141,7 @@ export default async function PostPage({ params }: Props) {
           </div>
 
           <Link
-            href="/"
+            href="/journal"
             className="group mt-14 inline-flex items-center gap-2 t-tag text-secondary transition-colors duration-200 ease-out hover:text-accent"
           >
             <ArrowUpLeft

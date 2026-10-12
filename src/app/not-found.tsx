@@ -12,7 +12,7 @@ export default function NotFound() {
         The entry you were looking for isn’t here.
       </p>
       <Link
-        href="/"
+        href="/journal"
         className="link-underline mt-8 inline-block text-[15px] text-accent"
       >
         Back to the journal

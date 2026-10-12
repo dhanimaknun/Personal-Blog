@@ -7,6 +7,7 @@ const MAX_VERSIONS = 40;
 const RESERVED_SLUGS = new Set([
   "admin", "api", "about", "search", "archive", "tags", "tag",
   "feed", "sitemap", "robots", "login", "_next", "static",
+  "journal", "after-hours", "finance-deck", "google-apps",
 ]);
 
 export async function uniqueSlug(base: string, ignoreId?: string): Promise<string> {

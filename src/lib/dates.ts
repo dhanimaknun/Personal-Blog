@@ -40,7 +40,11 @@ export function relativeTime(date: Date | string): string {
 }
 
 export function greeting(d = new Date()): string {
-  const h = d.getHours();
+  return greetingForHour(d.getHours());
+}
+
+/** Greeting for an hour 0–23 — for callers that know the reader's time zone. */
+export function greetingForHour(h: number): string {
   if (h < 5) return "Good evening";
   if (h < 12) return "Good morning";
   if (h < 18) return "Good afternoon";

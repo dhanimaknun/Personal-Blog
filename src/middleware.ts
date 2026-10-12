@@ -5,12 +5,14 @@ const SAFE_METHODS = new Set(["GET", "HEAD", "OPTIONS"]);
 
 // Public passthroughs even under a protected prefix. The Telegram webhook
 // carries its own auth (a secret header + an owner-id check) since the
-// request comes from Telegram's servers, not a logged-in browser.
+// request comes from Telegram's servers, not a logged-in browser; the
+// Google sync likewise checks its own bearer secret (Apps Script caller).
 const PUBLIC_PATHS = new Set([
   "/admin/login",
   "/api/auth/login",
   "/api/auth/logout",
   "/api/telegram/webhook",
+  "/api/google/sync",
 ]);
 
 export async function middleware(req: NextRequest) {

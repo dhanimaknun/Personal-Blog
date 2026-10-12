@@ -39,7 +39,7 @@ ${post.tags.map((t) => `      <category>${escapeXml(t)}</category>`).join("\n")}
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>${escapeXml(site.name)}</title>
-    <link>${site.url}</link>
+    <link>${site.url}/journal</link>
     <description>${escapeXml(site.description)}</description>
     <language>en</language>
     <lastBuildDate>${new Date(updated).toUTCString()}</lastBuildDate>

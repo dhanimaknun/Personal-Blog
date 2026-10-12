@@ -20,6 +20,14 @@ const config: Config = {
         display: ["var(--font-display)"],
         mono: ["var(--font-mono)"],
       },
+      screens: {
+        // Viewport-height breakpoints for the one-screen front desk.
+        tall: { raw: "(min-height: 780px)" },
+        xtall: { raw: "(min-height: 900px)" },
+        // Wide and tall enough to lock the front desk to one screen; below
+        // this it scrolls like any page rather than clipping.
+        fits: { raw: "(min-width: 768px) and (min-height: 640px)" },
+      },
       maxWidth: {
         shell: "1400px",
         reading: "820px",
