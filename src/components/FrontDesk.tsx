@@ -191,15 +191,15 @@ export function FinanceCard({ n, peek }: { n: number; peek: FinancePeek | null }
   );
 }
 
-// ── 03 · Google Apps (admin) ──────────────────────────────────
+// ── 03 · Essential (admin) ────────────────────────────────────
 
 export function GoogleCard({ n, peek }: { n: number; peek: GooglePeek }) {
   const { bills } = peek;
   return (
-    <Link href="/google-apps" className={`${CARD} md:col-span-2`}>
+    <Link href="/essential" className={`${CARD} md:col-span-2`}>
       <Eyebrow
         n={n}
-        label="Google Apps"
+        label="Essential"
         right={
           <span className="inline-flex items-center gap-1" title="Only visible to you">
             <Lock className="h-3 w-3" strokeWidth={2} aria-hidden />
@@ -255,7 +255,7 @@ export function GoogleCard({ n, peek }: { n: number; peek: GooglePeek }) {
         </div>
       )}
 
-      <Door label="Open Google Apps" />
+      <Door label="Open Essential" />
     </Link>
   );
 }

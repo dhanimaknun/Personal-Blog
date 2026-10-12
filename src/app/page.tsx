@@ -65,7 +65,7 @@ export default async function FrontDeskPage() {
           }`}
         >
           {/* visitors: Journal + After Hours on one tall row.
-              admin: Journal · After Hours / Google Apps · Finance Deck */}
+              admin: Journal · After Hours / Essential · Finance Deck */}
           <JournalCard n={1} peek={journal} roomy={!session} />
           <AfterHoursCard n={2} peek={afterHours} />
           {session && google ? <GoogleCard n={3} peek={google} /> : null}

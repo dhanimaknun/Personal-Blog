@@ -6,6 +6,9 @@ const nextConfig = {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [{ protocol: "https", hostname: "**" }],
   },
+  async redirects() {
+    return [{ source: "/google-apps", destination: "/essential", permanent: true }];
+  },
   async headers() {
     return [
       {

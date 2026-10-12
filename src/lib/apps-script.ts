@@ -1,5 +1,5 @@
 // The Google Apps Script the owner pastes into script.google.com. Kept here
-// (not as loose files) so the setup card on /google-apps can show it with the
+// (not as loose files) so the setup card on /essential can show it with the
 // site's own sync URL already filled in.
 //
 // It uses the Gmail and Calendar *advanced services* rather than GmailApp /

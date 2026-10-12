@@ -65,7 +65,7 @@ export function GoogleApps(props: {
     <div className="mx-auto max-w-[1080px]">
       <header className="mt-14 flex flex-wrap items-end justify-between gap-6">
         <div>
-          <p className="text-[14px] text-secondary">Google Apps</p>
+          <p className="text-[14px] text-secondary">Essential</p>
           <h1 className="mt-1 font-display text-[30px] font-semibold tracking-[-0.025em] text-ink md:text-[36px]">
             Your days & your bills
           </h1>

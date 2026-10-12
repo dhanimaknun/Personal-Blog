@@ -6,7 +6,7 @@ const LINKS = [
   { href: "/journal", label: "Journal" },
   { href: "/after-hours", label: "After Hours" },
   { href: "/finance-deck", label: "Finance Deck", adminOnly: true },
-  { href: "/google-apps", label: "Google Apps", adminOnly: true },
+  { href: "/essential", label: "Essential", adminOnly: true },
   { href: "/about", label: "About" },
 ];
 

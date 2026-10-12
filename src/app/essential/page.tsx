@@ -12,7 +12,7 @@ import { absoluteUrl } from "@/lib/site";
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Google Apps",
+  title: "Essential",
   robots: { index: false, follow: false },
 };
 
