@@ -111,6 +111,14 @@
     color: #6e6e73;
   }
 
+  /* site navigation — the body face rather than newsprint caps */
+  .t-nav {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: -0.01em;
+  }
+
   /* monospace labels */
   .t-label {
     font-family: var(--font-mono);

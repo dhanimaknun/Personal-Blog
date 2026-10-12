@@ -26,13 +26,13 @@ export async function SiteFooter({ tight = false }: { tight?: boolean }) {
           <Link
             key={l.href}
             href={l.href}
-            className="t-label text-secondary transition-colors hover:text-accent"
+            className="t-nav text-secondary transition-colors hover:text-accent"
           >
             {l.label}
           </Link>
         ))}
       </nav>
-      <p className="t-label text-secondary">
+      <p className="t-nav font-normal text-secondary">
         {site.copyrightName} © {new Date().getFullYear()}
       </p>
     </footer>
