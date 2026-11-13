@@ -3,6 +3,7 @@
 import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import { X, Star, Loader2, ImagePlus, Trash2 } from "lucide-react";
+import { uploadImageFile } from "@/lib/upload-client";
 import {
   MEDIA_TYPES,
   MEDIA_STATUSES,
@@ -75,12 +76,7 @@ export function EntryModal({
     setUploading(true);
     setError(null);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const json = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(json.error || "Upload failed");
-      set("cover", json.url);
+      set("cover", await uploadImageFile(file));
     } catch (err) {
       setError((err as Error).message);
     } finally {

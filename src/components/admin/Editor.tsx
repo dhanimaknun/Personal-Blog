@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import type { Post } from "@prisma/client";
 import { api } from "@/lib/client";
+import { uploadImageFile } from "@/lib/upload-client";
 import { autoExcerpt, countWords, readingTime, slugify } from "@/lib/text";
 import { relativeTime } from "@/lib/dates";
 import { Markdown } from "@/components/Markdown";
@@ -275,13 +276,9 @@ export function Editor({ initial }: { initial: Post }) {
   async function uploadFile(file: File) {
     setUploading(true);
     try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || `Upload failed (${res.status})`);
+      const url = await uploadImageFile(file);
       const alt = file.name.replace(/\.[^.]+$/, "") || "image";
-      insertAtCursor(`\n\n![${alt}](${data.url})\n\n`);
+      insertAtCursor(`\n\n![${alt}](${url})\n\n`);
     } catch (err) {
       const url = window.prompt(
         `${(err as Error).message}\n\nPaste an image URL to insert instead:`,
