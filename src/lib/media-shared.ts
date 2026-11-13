@@ -93,3 +93,37 @@ export function computeStats(entries: MediaEntry[]): MediaStats {
       .map(([mood, count]) => ({ mood, count })),
   };
 }
+
+// "Up Next" picks (see src/lib/recs). Serialized MediaRecommendation.
+export type Recommendation = {
+  id: string;
+  key: string;
+  type: MediaType;
+  title: string;
+  creator: string;
+  cover: string;
+  url: string;
+  source: string;
+  genres: string[];
+  reason: string;
+  score: number;
+  updatedAt: string;
+};
+
+// Which "Up Next" tab a pick belongs to. Anime has no MediaType of its own —
+// it's SERIES from Kitsu — so the source decides between anime and watch.
+export type Shelf = "read" | "watch" | "anime" | "listen";
+
+export function shelfOf(rec: { type: MediaType; source: string }): Shelf | null {
+  if (rec.type === "BOOK") return "read";
+  if (rec.type === "MUSIC") return "listen";
+  if (rec.type === "SERIES" || rec.type === "MOVIE") return rec.source === "kitsu" ? "anime" : "watch";
+  return null;
+}
+
+export const SOURCE_LABEL: Record<string, string> = {
+  openlibrary: "Open Library",
+  kitsu: "Kitsu",
+  tmdb: "TMDB",
+  deezer: "Deezer",
+};

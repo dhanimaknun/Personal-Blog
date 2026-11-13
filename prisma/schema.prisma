@@ -78,6 +78,35 @@ model MediaEntry {
   @@index([updatedAt])
 }
 
+// "Up Next" suggestions for After Hours, rebuilt from the library's taste
+// profile by src/lib/recs. `key` is "<source>:<external id>" so a dismissed
+// or added pick is never suggested again (those rows are kept as a blocklist).
+model MediaRecommendation {
+  id      String    @id @default(cuid())
+  key     String    @unique
+  type    MediaType
+  title   String
+  creator String    @default("")
+  cover   String    @default("")
+  url     String    @default("")
+  source  String // openlibrary | kitsu | tmdb | deezer
+  genres  String[]  @default([])
+  reason  String    @default("") // "Because you loved The WONDERfools"
+  score   Float     @default(0)
+  status  RecStatus @default(SUGGESTED)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, type])
+}
+
+enum RecStatus {
+  SUGGESTED
+  ADDED
+  DISMISSED
+}
+
 // A lightweight snapshot taken on autosave / publish, powering version history.
 model PostVersion {
   id      String @id @default(cuid())

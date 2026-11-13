@@ -3,7 +3,8 @@ import { Masthead } from "@/components/Masthead";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getSession } from "@/lib/auth";
 import { getMediaEntries } from "@/lib/media";
-import type { MediaEntry } from "@/lib/media-shared";
+import type { MediaEntry, Recommendation } from "@/lib/media-shared";
+import { getRecommendations } from "@/lib/recs";
 import { site, absoluteUrl } from "@/lib/site";
 import { AfterHours } from "@/components/after-hours/AfterHours";
 
@@ -21,13 +22,27 @@ export const metadata: Metadata = {
 };
 
 export default async function AfterHoursPage() {
-  const [session, rows] = await Promise.all([getSession(), getMediaEntries()]);
+  const [session, rows, recRows] = await Promise.all([getSession(), getMediaEntries(), getRecommendations()]);
 
   const entries: MediaEntry[] = rows.map((e) => ({
     ...e,
     consumedAt: e.consumedAt ? e.consumedAt.toISOString() : null,
     createdAt: e.createdAt.toISOString(),
     updatedAt: e.updatedAt.toISOString(),
+  }));
+  const recs: Recommendation[] = recRows.map((r) => ({
+    id: r.id,
+    key: r.key,
+    type: r.type,
+    title: r.title,
+    creator: r.creator,
+    cover: r.cover,
+    url: r.url,
+    source: r.source,
+    genres: r.genres,
+    reason: r.reason,
+    score: r.score,
+    updatedAt: r.updatedAt.toISOString(),
   }));
 
   return (
@@ -37,7 +52,7 @@ export default async function AfterHoursPage() {
           <Masthead compact />
         </div>
 
-        <AfterHours initialEntries={entries} canEdit={Boolean(session)} />
+        <AfterHours initialEntries={entries} initialRecs={recs} canEdit={Boolean(session)} />
 
         <SiteFooter />
       </div>

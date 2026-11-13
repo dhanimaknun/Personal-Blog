@@ -11,11 +11,13 @@ import {
   type MediaEntry,
   type MediaType,
   type MediaStatus,
+  type Recommendation,
 } from "@/lib/media-shared";
 import { MediaCard } from "@/components/after-hours/MediaCard";
 import { OnLoopCard } from "@/components/after-hours/OnLoopCard";
 import { EntryModal } from "@/components/after-hours/EntryModal";
 import { DetailModal } from "@/components/after-hours/DetailModal";
+import { UpNext } from "@/components/after-hours/UpNext";
 
 const GRID_TYPES: MediaType[] = ["BOOK", "MOVIE", "SERIES", "MANGA"];
 const PLURAL_LABEL: Record<MediaType, string> = {
@@ -39,9 +41,11 @@ function greetingLine(hour: number | null) {
 
 export function AfterHours({
   initialEntries,
+  initialRecs,
   canEdit,
 }: {
   initialEntries: MediaEntry[];
+  initialRecs: Recommendation[];
   canEdit: boolean;
 }) {
   const router = useRouter();
@@ -171,6 +175,17 @@ export function AfterHours({
               </div>
             </section>
           ) : null}
+
+          {/* up next */}
+          <UpNext
+            entries={entries}
+            initialRecs={initialRecs}
+            canEdit={canEdit}
+            onAdded={(entry) => {
+              upsert(entry);
+              router.refresh();
+            }}
+          />
 
           {/* library */}
           <section className="mt-16">
